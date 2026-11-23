@@ -192,12 +192,12 @@ function ExperienceModal({
         </Field>
 
         {isEdit && (
-          <div className="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-800">
+          <div className="flex items-center justify-between rounded-xl border border-text-secondary/15 px-4 py-3 dark:border-white/10">
             <div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <p className="text-sm font-semibold text-text-primary">
                 Tampilkan di portofolio
               </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">
+              <p className="text-xs font-medium text-text-secondary">
                 Nonaktifkan untuk menyembunyikan tanpa menghapus data.
               </p>
             </div>
@@ -326,7 +326,7 @@ export default function ExperiencesPage() {
         </Card>
       ) : (
         <div className="space-y-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm font-medium text-text-secondary">
             {items.length} pengalaman terdaftar
           </p>
           {items.map((item) => (
@@ -339,16 +339,16 @@ export default function ExperiencesPage() {
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+                    <h2 className="text-base font-bold text-text-primary">
                       {item.role}
                     </h2>
                     {!item.is_active && <Badge tone="amber">Nonaktif</Badge>}
                     <Badge tone="blue">{item.date_range}</Badge>
                   </div>
-                  <p className="mt-0.5 text-sm font-medium text-gray-600 dark:text-gray-300">
+                  <p className="mt-0.5 text-sm font-semibold text-text-primary/90">
                     {item.company}
                   </p>
-                  <p className="mt-2 max-w-3xl whitespace-pre-line text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                  <p className="mt-2 max-w-3xl whitespace-pre-line text-sm font-medium leading-relaxed text-text-secondary">
                     {item.description}
                   </p>
                   {item.skills.length > 0 && (
@@ -360,14 +360,14 @@ export default function ExperiencesPage() {
                       ))}
                     </div>
                   )}
-                  <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
+                  <p className="mt-3 text-xs font-medium text-text-secondary">
                     Urutan tampil: {item.sort_order}
                   </p>
                 </div>
 
                 <div className="flex shrink-0 items-center gap-2 sm:flex-col sm:items-end">
-                  <div className="flex items-center gap-2 rounded-lg border border-gray-200 px-2.5 py-1.5 dark:border-gray-800">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-2 rounded-xl border border-text-secondary/15 px-2.5 py-1.5 dark:border-white/10">
+                    <span className="text-xs font-medium text-text-secondary">
                       Aktif
                     </span>
                     <Toggle

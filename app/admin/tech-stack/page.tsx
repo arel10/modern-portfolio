@@ -156,8 +156,8 @@ function CategoryModal({
             />
           </Field>
           {isEdit && (
-            <div className="flex items-center justify-between gap-3 self-end rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-800">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="flex items-center justify-between gap-3 self-end rounded-xl border border-text-secondary/15 px-4 py-3 dark:border-white/10">
+              <span className="text-sm font-semibold text-text-primary">
                 Aktif
               </span>
               <Toggle
@@ -278,10 +278,9 @@ function ItemModal({
         </div>
         <ImageUpload
           label="Ikon SVG / Logo Teknologi"
-          hint="Unggah file ikon (SVG, PNG, WEBP). Maksimal 1MB."
+          hint="Unggah file ikon atau logo teknologi (SVG, PNG, WEBP, JPG)."
           value={form.svg_path}
           onChange={(url) => set('svg_path', url)}
-          maxSizeMB={1}
           accept="image/svg+xml,image/png,image/webp,image/jpeg"
         />
         <div className="grid gap-4 sm:grid-cols-2">
@@ -294,8 +293,8 @@ function ItemModal({
             />
           </Field>
           {isEdit && (
-            <div className="flex items-center justify-between gap-3 self-end rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-800">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="flex items-center justify-between gap-3 self-end rounded-xl border border-text-secondary/15 px-4 py-3 dark:border-white/10">
+              <span className="text-sm font-semibold text-text-primary">
                 Aktif
               </span>
               <Toggle
@@ -500,7 +499,7 @@ export default function TechStackPage() {
         </Card>
       ) : (
         <div className="space-y-5">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm font-medium text-text-secondary">
             {categories.length} kategori · {items.length} teknologi
           </p>
 
@@ -510,25 +509,25 @@ export default function TechStackPage() {
             )
             return (
               <Card key={category.id} className="overflow-hidden">
-                <div className="flex flex-col gap-3 border-b border-gray-100 p-5 dark:border-gray-800 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-3 border-b border-text-secondary/15 p-5 dark:border-white/10 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+                      <h2 className="text-base font-bold text-text-primary">
                         {category.title}
                       </h2>
                       <Badge tone="blue">{categoryItems.length} item</Badge>
                       {!category.is_active && <Badge tone="amber">Nonaktif</Badge>}
                     </div>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 max-w-2xl text-sm font-medium text-text-secondary">
                       {category.description}
                     </p>
-                    <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                    <p className="mt-1 text-xs font-medium text-text-secondary">
                       Urutan: {category.sort_order}
                     </p>
                   </div>
                   <div className="flex shrink-0 flex-wrap items-center gap-2">
-                    <div className="flex items-center gap-2 rounded-lg border border-gray-200 px-2.5 py-1.5 dark:border-gray-800">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                    <div className="flex items-center gap-2 rounded-xl border border-text-secondary/15 px-2.5 py-1.5 dark:border-white/10">
+                      <span className="text-xs font-medium text-text-secondary">
                         Aktif
                       </span>
                       <Toggle
@@ -561,7 +560,7 @@ export default function TechStackPage() {
 
                 <div className="p-5">
                   {categoryItems.length === 0 ? (
-                    <p className="rounded-xl border border-dashed border-gray-200 px-4 py-6 text-center text-sm text-gray-400 dark:border-gray-700 dark:text-gray-500">
+                    <p className="rounded-2xl border border-dashed border-text-secondary/20 px-4 py-8 text-center text-sm font-medium text-text-secondary">
                       Belum ada teknologi di kategori ini.
                     </p>
                   ) : (
@@ -571,18 +570,18 @@ export default function TechStackPage() {
                           key={item.id}
                           className={
                             item.is_active
-                              ? 'flex items-center gap-3 rounded-xl border border-gray-200 p-3 dark:border-gray-800'
-                              : 'flex items-center gap-3 rounded-xl border border-gray-200 p-3 opacity-60 dark:border-gray-800'
+                              ? 'flex items-center gap-3 rounded-xl border border-text-secondary/15 bg-thirdary/20 p-3 hover:bg-thirdary/40 transition-colors dark:border-white/10'
+                              : 'flex items-center gap-3 rounded-xl border border-text-secondary/15 bg-thirdary/20 p-3 opacity-60 dark:border-white/10'
                           }
                         >
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-800">
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-text-secondary/15 bg-background dark:border-white/10">
                             <TechLogo src={item.svg_path} name={item.name} />
                           </span>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
+                            <p className="truncate text-sm font-bold text-text-primary">
                               {item.name}
                             </p>
-                            <p className="truncate text-xs text-gray-400 dark:text-gray-500">
+                            <p className="truncate text-xs font-mono text-text-secondary">
                               {item.svg_path || 'Tanpa ikon'} · #{item.sort_order}
                             </p>
                           </div>

@@ -67,7 +67,7 @@ export default function Header() {
 
   return (
     <div className="fixed top-4 md:top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none w-full">
-      <div className="w-full max-w-5xl pointer-events-auto">
+      <div className="w-full max-w-6xl pointer-events-auto">
         <FadeDown>
           <div className="relative flex items-center justify-between py-3 md:py-4 px-6 md:px-8 bg-background/60 backdrop-blur-2xl backdrop-saturate-150 border border-text-secondary/15 dark:border-white/10 rounded-full shadow-[inset_0_1px_0_0_rgba(255,255,255,0.55),0_8px_32px_-12px_rgba(0,0,0,0.25)] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_8px_32px_-12px_rgba(0,0,0,0.8)] transition-colors duration-300">
             <div className="flex flex-row items-center">
@@ -77,9 +77,9 @@ export default function Header() {
 
             <nav className="flex-row md:gap-8 lg:gap-10 hidden lg:flex items-center">
               {shortCut.map((item, index) => (
-                <button 
-                  onClick={() => handleScroll(item.link)} 
-                  key={index} 
+                <button
+                  onClick={() => handleScroll(item.link)}
+                  key={index}
                   className={`
                     ${activeSection === item.name.toLowerCase() ? "text-text-primary font-bold" : "text-text-secondary font-medium hover:text-text-primary"} 
                     cursor-pointer text-sm md:text-base tracking-wide flex flex-row items-center transition-colors duration-200 ease-in-out
@@ -110,7 +110,7 @@ export default function Header() {
 
               <button className="lg:hidden cursor-pointer p-2 -m-1 rounded-full text-text-secondary hover:text-text-primary hover:bg-text-secondary/10 transition-all duration-300" onClick={() => setIsOpen(!isOpen)}>
                 <svg className="w-6 md:w-7" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                   <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M5 7h14M5 12h14M5 17h14" />
+                  <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M5 7h14M5 12h14M5 17h14" />
                 </svg>
               </button>
             </div>
@@ -119,9 +119,9 @@ export default function Header() {
               {/* Mobile Menu */}
               <div className="flex flex-col gap-5 bg-background/70 backdrop-blur-2xl backdrop-saturate-150 border border-text-secondary/15 dark:border-white/10 p-5 rounded-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.45),0_12px_40px_-12px_rgba(0,0,0,0.35)] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_12px_40px_-12px_rgba(0,0,0,0.8)] w-56">
                 {shortCut.map((item, index) => (
-                  <button 
-                    onClick={() => { handleScroll(item.link); setIsOpen(false); }} 
-                    key={index} 
+                  <button
+                    onClick={() => { handleScroll(item.link); setIsOpen(false); }}
+                    key={index}
                     className={`
                       ${activeSection === item.name.toLowerCase() ? "text-text-primary font-bold" : "text-text-secondary font-medium"} 
                       cursor-pointer text-sm flex flex-row items-center gap-3 hover:text-text-primary transition-colors duration-200 ease-in-out
@@ -156,6 +156,10 @@ const shortCut = [
   {
     name: "Projects",
     link: "projects",
+  },
+  {
+    name: "Honors",
+    link: "achievements",
   },
   {
     name: "Contacts",

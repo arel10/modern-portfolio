@@ -76,7 +76,7 @@ function ProjectThumb({
   if (!src || failed) {
     return (
       <div
-        className={`flex shrink-0 items-center justify-center rounded-xl bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 ${className}`}
+        className={`flex shrink-0 items-center justify-center rounded-xl border border-text-secondary/15 bg-thirdary/40 text-text-secondary ${className}`}
       >
         <Icon name="image" className="h-6 w-6" />
       </div>
@@ -89,7 +89,7 @@ function ProjectThumb({
       src={src}
       alt={title}
       onError={() => setFailed(true)}
-      className={`shrink-0 rounded-xl border border-gray-100 object-cover dark:border-gray-800 ${className}`}
+      className={`shrink-0 rounded-xl border border-text-secondary/15 object-cover dark:border-white/10 ${className}`}
     />
   )
 }
@@ -210,10 +210,9 @@ function ProjectModal({
 
         <ImageUpload
           label="Foto Sampul / Screenshot Proyek"
-          hint="Unggah foto karya/proyek Anda (PNG, JPG, WEBP, SVG). Maksimal 2MB."
+          hint="Unggah screenshot atau foto proyek (PNG, JPG, WEBP). Bebas ukuran dari HP/kamera, otomatis dikompres oleh server."
           value={form.image_path}
           onChange={(url) => set('image_path', url)}
-          maxSizeMB={2}
         />
 
         <Field label="Label tanggal" hint="Contoh: 2025-06-01 atau Juni 2025">
@@ -273,12 +272,12 @@ function ProjectModal({
               min={0}
             />
           </Field>
-          <div className="flex items-center justify-between gap-3 self-end rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-800">
+          <div className="flex items-center justify-between gap-3 self-end rounded-xl border border-text-secondary/15 px-4 py-3 dark:border-white/10">
             <div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <p className="text-sm font-semibold text-text-primary">
                 Repo privat
               </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">
+              <p className="text-xs font-medium text-text-secondary">
                 Sembunyikan tautan GitHub.
               </p>
             </div>
@@ -291,12 +290,12 @@ function ProjectModal({
         </div>
 
         {isEdit && (
-          <div className="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-800">
+          <div className="flex items-center justify-between rounded-xl border border-text-secondary/15 px-4 py-3 dark:border-white/10">
             <div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <p className="text-sm font-semibold text-text-primary">
                 Tampilkan di portofolio
               </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">
+              <p className="text-xs font-medium text-text-secondary">
                 Nonaktifkan untuk menyembunyikan tanpa menghapus data.
               </p>
             </div>
@@ -433,7 +432,7 @@ export default function ProjectsPage() {
         </Card>
       ) : (
         <div className="space-y-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm font-medium text-text-secondary">
             {items.length} proyek terdaftar
           </p>
           {items.map((item) => (
@@ -446,7 +445,7 @@ export default function ProjectsPage() {
                   <ProjectThumb src={item.image_path} title={item.title} />
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+                      <h2 className="text-base font-bold text-text-primary">
                         {item.title}
                       </h2>
                       {item.is_private_repo && (
@@ -454,7 +453,7 @@ export default function ProjectsPage() {
                       )}
                       {!item.is_active && <Badge tone="amber">Nonaktif</Badge>}
                     </div>
-                    <p className="mt-1 max-w-2xl text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 max-w-2xl text-sm leading-relaxed text-text-secondary font-medium">
                       {item.short_description}
                     </p>
                     {item.tech.length > 0 && (
@@ -466,7 +465,7 @@ export default function ProjectsPage() {
                         ))}
                       </div>
                     )}
-                    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400 dark:text-gray-500">
+                    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-text-secondary">
                       {item.created_at_label && (
                         <span className="inline-flex items-center gap-1">
                           <Icon name="chart" className="h-3.5 w-3.5" />
@@ -479,7 +478,7 @@ export default function ProjectsPage() {
                           href={item.github_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-blue-600 hover:underline dark:text-blue-400"
+                          className="inline-flex items-center gap-1 font-semibold text-text-primary hover:underline"
                         >
                           <Icon name="link" className="h-3.5 w-3.5" />
                           GitHub
@@ -490,7 +489,7 @@ export default function ProjectsPage() {
                           href={item.live_demo_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-blue-600 hover:underline dark:text-blue-400"
+                          className="inline-flex items-center gap-1 font-semibold text-text-primary hover:underline"
                         >
                           <Icon name="external" className="h-3.5 w-3.5" />
                           Live Demo
@@ -501,8 +500,8 @@ export default function ProjectsPage() {
                 </div>
 
                 <div className="flex shrink-0 items-center gap-2 sm:flex-col sm:items-end">
-                  <div className="flex items-center gap-2 rounded-lg border border-gray-200 px-2.5 py-1.5 dark:border-gray-800">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-2 rounded-xl border border-text-secondary/15 px-2.5 py-1.5 dark:border-white/10">
+                    <span className="text-xs font-medium text-text-secondary">
                       Aktif
                     </span>
                     <Toggle

@@ -12,6 +12,9 @@ const navItems: { href: string; label: string; icon: IconName }[] = [
   { href: '/admin/profile', label: 'Profil Saya', icon: 'user' },
   { href: '/admin/projects', label: 'Karya / Proyek', icon: 'rocket' },
   { href: '/admin/experiences', label: 'Pengalaman', icon: 'briefcase' },
+  { href: '/admin/educations', label: 'Pendidikan', icon: 'academic' },
+  { href: '/admin/achievements', label: 'Pencapaian & Jurnal', icon: 'trophy' },
+  { href: '/admin/certificates', label: 'Sertifikat', icon: 'certificate' },
   { href: '/admin/tech-stack', label: 'Tech Stack', icon: 'stack' },
   { href: '/admin/socials', label: 'Sosial Media', icon: 'globe' },
   { href: '/admin/roles', label: 'Roles & Stats', icon: 'tag' },
@@ -181,17 +184,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
 
             <div className="flex items-center gap-3">
-              {/* External Preview Link */}
-              <Link
-                href="/"
-                target="_blank"
-                rel="noreferrer"
-                className="hidden sm:inline-flex items-center gap-2 rounded-full border border-text-secondary/20 hover:border-text-primary/50 bg-background/50 px-3.5 py-1.5 text-xs font-bold text-text-primary tracking-wide shadow-sm hover:shadow transition-all"
-              >
-                <span>Lihat Web</span>
-                <Icon name="external" className="h-3.5 w-3.5 text-text-secondary" />
-              </Link>
-
               {/* Theme Toggle */}
               <button
                 type="button"

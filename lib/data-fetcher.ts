@@ -9,6 +9,9 @@ import {
   getQuickStats,
   getSocials,
   getExperiences,
+  getEducations,
+  getAchievements,
+  getCertificates,
   getProjects,
   getTechCategoriesWithItems,
 } from './db'
@@ -19,6 +22,9 @@ import {
   FALLBACK_QUICK_STATS,
   FALLBACK_SOCIALS,
   FALLBACK_EXPERIENCES,
+  FALLBACK_EDUCATIONS,
+  FALLBACK_ACHIEVEMENTS,
+  FALLBACK_CERTIFICATES,
   FALLBACK_PROJECTS,
 } from './fallback-data'
 
@@ -28,6 +34,9 @@ import type {
   QuickStatRow,
   SocialRow,
   ExperienceRow,
+  EducationRow,
+  AchievementRow,
+  CertificateRow,
   ProjectRow,
   TechCategoryRow,
   TechItemRow,
@@ -88,5 +97,8 @@ export const fetchRoles     = (): Promise<RoleRow[]>        => safe(getRoles, FA
 export const fetchStats     = (): Promise<QuickStatRow[]>   => safe(getQuickStats, FALLBACK_QUICK_STATS)
 export const fetchSocials   = (): Promise<SocialRow[]>      => safe(getSocials, FALLBACK_SOCIALS)
 export const fetchExperiences = (): Promise<ExperienceRow[]>=> safe(getExperiences, FALLBACK_EXPERIENCES)
+export const fetchEducations = (): Promise<EducationRow[]>  => safe(getEducations, FALLBACK_EDUCATIONS)
+export const fetchAchievements = (): Promise<AchievementRow[]> => safe(getAchievements, FALLBACK_ACHIEVEMENTS)
+export const fetchCertificates = (): Promise<CertificateRow[]> => safe(getCertificates, FALLBACK_CERTIFICATES)
 export const fetchProjects  = (): Promise<ProjectRow[]>     => safe(getProjects, FALLBACK_PROJECTS)
 export const fetchTechStack = (): Promise<WithTech[]>       => safe(getTechCategoriesWithItems, FALLBACK_TECH)

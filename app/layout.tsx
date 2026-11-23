@@ -46,11 +46,6 @@ export const metadata: Metadata = {
     description: `Personal portfolio of ${ownerName}. Fullstack Developer & Product Development specialist.`,
     images: [avatarUrl],
   },
-  icons: {
-    icon: avatarUrl,
-    shortcut: avatarUrl,
-    apple: avatarUrl,
-  },
   alternates: {
     canonical: "/",
   },

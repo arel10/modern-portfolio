@@ -106,8 +106,8 @@ function RoleModal({
           />
         </Field>
         {isEdit && (
-          <div className="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-800">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <div className="flex items-center justify-between rounded-xl border border-text-secondary/15 px-4 py-3 dark:border-white/10">
+            <span className="text-sm font-semibold text-text-primary">
               Aktif
             </span>
             <Toggle checked={isActive} onChange={setIsActive} label="Aktifkan role" />
@@ -183,10 +183,10 @@ function RolesPanel() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-base font-bold text-text-primary">
             Roles
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm font-medium text-text-secondary">
             Teks jabatan yang bergantian di bagian hero.
           </p>
         </div>
@@ -233,7 +233,7 @@ function RolesPanel() {
           />
         </Card>
       ) : (
-        <Card className="divide-y divide-gray-100 dark:divide-gray-800">
+        <Card className="divide-y divide-text-secondary/15 dark:divide-white/10">
           {items.map((item) => (
             <div
               key={item.id}
@@ -243,14 +243,14 @@ function RolesPanel() {
               )}
             >
               <div className="flex min-w-0 items-center gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-rose-500/20 bg-rose-500/10 text-rose-500">
                   <Icon name="tag" className="h-4 w-4" />
                 </span>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
+                  <p className="truncate text-sm font-bold text-text-primary">
                     {item.label}
                   </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                  <p className="text-xs font-medium text-text-secondary">
                     Urutan: {item.sort_order}
                   </p>
                 </div>
@@ -258,8 +258,8 @@ function RolesPanel() {
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 rounded-lg border border-gray-200 px-2.5 py-1.5 dark:border-gray-800">
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Aktif</span>
+                <div className="flex items-center gap-2 rounded-xl border border-text-secondary/15 px-2.5 py-1.5 dark:border-white/10">
+                  <span className="text-xs font-medium text-text-secondary">Aktif</span>
                   <Toggle
                     checked={item.is_active}
                     onChange={() => toggleActive(item)}
@@ -427,8 +427,8 @@ function StatModal({
             />
           </Field>
           {isEdit && (
-            <div className="flex items-center justify-between gap-3 self-end rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-800">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="flex items-center justify-between gap-3 self-end rounded-xl border border-text-secondary/15 px-4 py-3 dark:border-white/10">
+              <span className="text-sm font-semibold text-text-primary">
                 Aktif
               </span>
               <Toggle
@@ -509,10 +509,10 @@ function StatsPanel() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-base font-bold text-text-primary">
             Quick Stats
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm font-medium text-text-secondary">
             Badge statistik singkat yang tampil di bagian hero.
           </p>
         </div>
@@ -567,21 +567,21 @@ function StatsPanel() {
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
+                  <p className="text-xs font-bold uppercase tracking-wider text-text-secondary">
                     {item.label}
                   </p>
-                  <p className="mt-1 truncate text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                  <p className="mt-1 truncate text-2xl font-black tracking-tight text-text-primary">
                     {item.value}
                   </p>
                 </div>
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-500">
                   <Icon name="sparkles" className="h-4 w-4" />
                 </span>
               </div>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm font-medium text-text-secondary">
                 {item.message}
               </p>
-              <div className="mt-4 flex items-center justify-between gap-2 border-t border-gray-100 pt-3 dark:border-gray-800">
+              <div className="mt-4 flex items-center justify-between gap-2 border-t border-text-secondary/15 pt-3 dark:border-white/10">
                 <div className="flex items-center gap-2">
                   <Toggle
                     checked={item.is_active}
@@ -589,7 +589,7 @@ function StatsPanel() {
                     disabled={busyId === item.id}
                     label={`Aktifkan ${item.label}`}
                   />
-                  <span className="text-xs text-gray-400 dark:text-gray-500">
+                  <span className="text-xs font-medium text-text-secondary">
                     #{item.sort_order}
                   </span>
                 </div>
@@ -655,15 +655,15 @@ export default function RolesPage() {
         description="Kelola teks role dan badge statistik yang tampil di bagian hero."
       />
 
-      <div className="inline-flex rounded-xl border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div className="inline-flex rounded-2xl border border-text-secondary/15 bg-thirdary/30 p-1.5 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.03]">
         <button
           type="button"
           onClick={() => setTab('roles')}
           className={cn(
-            'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
+            'inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all',
             tab === 'roles'
-              ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
-              : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+              ? 'bg-text-primary text-background shadow-sm dark:bg-white dark:text-black'
+              : 'text-text-secondary hover:text-text-primary'
           )}
         >
           <Icon name="tag" className="h-4 w-4" />
@@ -673,10 +673,10 @@ export default function RolesPage() {
           type="button"
           onClick={() => setTab('stats')}
           className={cn(
-            'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
+            'inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all',
             tab === 'stats'
-              ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
-              : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+              ? 'bg-text-primary text-background shadow-sm dark:bg-white dark:text-black'
+              : 'text-text-secondary hover:text-text-primary'
           )}
         >
           <Icon name="sparkles" className="h-4 w-4" />

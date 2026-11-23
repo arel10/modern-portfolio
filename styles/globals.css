@@ -174,3 +174,12 @@ html {
 .animate-infinite-scroll:hover {
   animation-play-state: paused;
 }
+
+/* Sembunyikan scrollbar bawaan untuk horizontal carousel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

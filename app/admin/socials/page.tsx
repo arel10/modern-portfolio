@@ -168,8 +168,8 @@ function SocialModal({
             />
           </Field>
           {isEdit && (
-            <div className="flex items-center justify-between gap-3 self-end rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-800">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="flex items-center justify-between gap-3 self-end rounded-xl border border-text-secondary/15 px-4 py-3 dark:border-white/10">
+              <span className="text-sm font-semibold text-text-primary">
                 Aktif
               </span>
               <Toggle
@@ -298,8 +298,8 @@ export default function SocialsPage() {
         </Card>
       ) : (
         <Card className="overflow-hidden">
-          <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex items-center justify-between border-b border-text-secondary/15 px-5 py-4 dark:border-white/10">
+            <p className="text-sm font-medium text-text-secondary">
               {items.length} tautan terdaftar
             </p>
             <Badge tone="green">
@@ -310,34 +310,34 @@ export default function SocialsPage() {
           <div className="overflow-x-auto">
             <table className="min-w-[760px] w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-gray-100 text-xs uppercase tracking-wide text-gray-400 dark:border-gray-800 dark:text-gray-500">
-                  <th className="px-5 py-3 font-medium">Platform</th>
-                  <th className="px-5 py-3 font-medium">Label</th>
-                  <th className="px-5 py-3 font-medium">URL</th>
-                  <th className="px-5 py-3 font-medium">Urutan</th>
-                  <th className="px-5 py-3 font-medium">Aktif</th>
-                  <th className="px-5 py-3 text-right font-medium">Aksi</th>
+                <tr className="border-b border-text-secondary/15 text-xs uppercase tracking-wider text-text-secondary dark:border-white/10">
+                  <th className="px-5 py-3 font-semibold">Platform</th>
+                  <th className="px-5 py-3 font-semibold">Label</th>
+                  <th className="px-5 py-3 font-semibold">URL</th>
+                  <th className="px-5 py-3 font-semibold">Urutan</th>
+                  <th className="px-5 py-3 font-semibold">Aktif</th>
+                  <th className="px-5 py-3 text-right font-semibold">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <tbody className="divide-y divide-text-secondary/10 dark:divide-white/5">
                 {items.map((item) => (
                   <tr
                     key={item.id}
                     className={
                       item.is_active
-                        ? 'transition-colors hover:bg-gray-50/60 dark:hover:bg-gray-800/40'
-                        : 'opacity-60 transition-colors hover:bg-gray-50/60 dark:hover:bg-gray-800/40'
+                        ? 'transition-colors hover:bg-text-secondary/5'
+                        : 'opacity-60 transition-colors hover:bg-text-secondary/5'
                     }
                   >
                     <td className="px-5 py-3">
-                      <span className="inline-flex items-center gap-2 font-medium text-gray-800 dark:text-gray-200">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                      <span className="inline-flex items-center gap-2.5 font-bold text-text-primary">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-text-secondary/15 bg-thirdary/60 text-text-primary dark:border-white/10">
                           <Icon name="globe" className="h-4 w-4" />
                         </span>
                         {platformLabel(item.platform)}
                       </span>
                     </td>
-                    <td className="max-w-[180px] truncate px-5 py-3 text-gray-600 dark:text-gray-300">
+                    <td className="max-w-[180px] truncate px-5 py-3 font-medium text-text-secondary">
                       {item.username || '—'}
                     </td>
                     <td className="max-w-[240px] px-5 py-3">
@@ -346,16 +346,16 @@ export default function SocialsPage() {
                           href={item.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex max-w-full items-center gap-1.5 truncate text-blue-600 hover:underline dark:text-blue-400"
+                          className="inline-flex max-w-full items-center gap-1.5 truncate font-mono text-xs text-text-primary hover:underline"
                         >
-                          <Icon name="link" className="h-3.5 w-3.5 shrink-0" />
+                          <Icon name="link" className="h-3.5 w-3.5 shrink-0 text-text-secondary" />
                           <span className="truncate">{item.url}</span>
                         </a>
                       ) : (
-                        <span className="text-gray-400">—</span>
+                        <span className="text-text-secondary/50">—</span>
                       )}
                     </td>
-                    <td className="px-5 py-3 text-gray-500 dark:text-gray-400">
+                    <td className="px-5 py-3 text-text-secondary font-medium">
                       {item.sort_order}
                     </td>
                     <td className="px-5 py-3">

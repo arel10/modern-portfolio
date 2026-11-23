@@ -1,5 +1,14 @@
 import { pool } from './db'
-import type { ProfileRow, ExperienceRow, ProjectRow, TechCategoryRow, TechItemRow } from './db'
+import type {
+  ProfileRow,
+  ExperienceRow,
+  EducationRow,
+  AchievementRow,
+  CertificateRow,
+  ProjectRow,
+  TechCategoryRow,
+  TechItemRow,
+} from './db'
 
 // ─── Extended Interfaces for Admin ───────────────────────────────────────────
 
@@ -39,6 +48,24 @@ export interface AdminUserRow {
 
 export interface AdminExperienceRow extends ExperienceRow {
   is_active: boolean
+  updated_at: string
+}
+
+export interface AdminEducationRow extends EducationRow {
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface AdminAchievementRow extends AchievementRow {
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface AdminCertificateRow extends CertificateRow {
+  is_active: boolean
+  created_at: string
   updated_at: string
 }
 
@@ -260,6 +287,176 @@ export async function deleteExperience(id: number): Promise<void> {
   await pool.query('DELETE FROM experiences WHERE id = $1', [id])
 }
 
+// ─── Educations ───────────────────────────────────────────────────────────────
+
+export async function getAllEducations(): Promise<AdminEducationRow[]> {
+  const { rows } = await pool.query<AdminEducationRow>(
+    'SELECT * FROM educations ORDER BY sort_order ASC'
+  )
+  return rows
+}
+
+export async function createEducation(data: {
+  institution: string
+  degree: string
+  field_of_study?: string
+  date_range: string
+  grade?: string
+  description?: string
+  image_url?: string
+  skills: string[]
+  sort_order: number
+}): Promise<AdminEducationRow> {
+  const { rows } = await pool.query<AdminEducationRow>(
+    `INSERT INTO educations (institution, degree, field_of_study, date_range, grade, description, image_url, skills, sort_order)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+    [
+      data.institution,
+      data.degree,
+      data.field_of_study || null,
+      data.date_range,
+      data.grade || null,
+      data.description || null,
+      data.image_url || null,
+      data.skills,
+      data.sort_order,
+    ]
+  )
+  return rows[0]
+}
+
+export async function updateEducation(
+  id: number,
+  data: Partial<AdminEducationRow>
+): Promise<AdminEducationRow> {
+  const fields = Object.keys(data).filter((k) => k !== 'id')
+  const values = fields.map((k) => (data as Record<string, unknown>)[k])
+  const setClause = fields.map((f, i) => `${f} = $${i + 2}`).join(', ')
+  const { rows } = await pool.query<AdminEducationRow>(
+    `UPDATE educations SET ${setClause}, updated_at = NOW() WHERE id = $1 RETURNING *`,
+    [id, ...values]
+  )
+  return rows[0]
+}
+
+export async function deleteEducation(id: number): Promise<void> {
+  await pool.query('DELETE FROM educations WHERE id = $1', [id])
+}
+
+// ─── Achievements ─────────────────────────────────────────────────────────────
+
+export async function getAllAchievements(): Promise<AdminAchievementRow[]> {
+  const { rows } = await pool.query<AdminAchievementRow>(
+    'SELECT * FROM achievements ORDER BY sort_order ASC'
+  )
+  return rows
+}
+
+export async function createAchievement(data: {
+  title: string
+  category?: string
+  issuer: string
+  date: string
+  description?: string
+  link_url?: string
+  image_url?: string
+  skills?: string[]
+  sort_order?: number
+}): Promise<AdminAchievementRow> {
+  const { rows } = await pool.query<AdminAchievementRow>(
+    `INSERT INTO achievements (title, category, issuer, date, description, link_url, image_url, skills, sort_order)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+     RETURNING *`,
+    [
+      data.title,
+      data.category || 'prestasi',
+      data.issuer,
+      data.date,
+      data.description || null,
+      data.link_url || null,
+      data.image_url || null,
+      data.skills || [],
+      data.sort_order ?? 0,
+    ]
+  )
+  return rows[0]
+}
+
+export async function updateAchievement(
+  id: number,
+  data: Partial<AdminAchievementRow>
+): Promise<AdminAchievementRow> {
+  const fields = Object.keys(data).filter((k) => k !== 'id' && k !== 'created_at' && k !== 'updated_at')
+  const values = fields.map((k) => (data as Record<string, unknown>)[k])
+  const setClause = fields.map((f, i) => `${f} = $${i + 2}`).join(', ')
+  const { rows } = await pool.query<AdminAchievementRow>(
+    `UPDATE achievements SET ${setClause}, updated_at = NOW() WHERE id = $1 RETURNING *`,
+    [id, ...values]
+  )
+  return rows[0]
+}
+
+export async function deleteAchievement(id: number): Promise<void> {
+  await pool.query('DELETE FROM achievements WHERE id = $1', [id])
+}
+
+// ─── Certificates ─────────────────────────────────────────────────────────────
+
+export async function getAllCertificates(): Promise<AdminCertificateRow[]> {
+  const { rows } = await pool.query<AdminCertificateRow>(
+    'SELECT * FROM certificates ORDER BY sort_order ASC'
+  )
+  return rows
+}
+
+export async function createCertificate(data: {
+  title: string
+  issuer: string
+  issue_date: string
+  expiration_date?: string
+  credential_id?: string
+  credential_url?: string
+  image_url?: string
+  skills?: string[]
+  sort_order?: number
+}): Promise<AdminCertificateRow> {
+  const { rows } = await pool.query<AdminCertificateRow>(
+    `INSERT INTO certificates (title, issuer, issue_date, expiration_date, credential_id, credential_url, image_url, skills, sort_order)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+     RETURNING *`,
+    [
+      data.title,
+      data.issuer,
+      data.issue_date,
+      data.expiration_date || null,
+      data.credential_id || null,
+      data.credential_url || null,
+      data.image_url || null,
+      data.skills || [],
+      data.sort_order ?? 0,
+    ]
+  )
+  return rows[0]
+}
+
+export async function updateCertificate(
+  id: number,
+  data: Partial<AdminCertificateRow>
+): Promise<AdminCertificateRow> {
+  const fields = Object.keys(data).filter((k) => k !== 'id' && k !== 'created_at' && k !== 'updated_at')
+  const values = fields.map((k) => (data as Record<string, unknown>)[k])
+  const setClause = fields.map((f, i) => `${f} = $${i + 2}`).join(', ')
+  const { rows } = await pool.query<AdminCertificateRow>(
+    `UPDATE certificates SET ${setClause}, updated_at = NOW() WHERE id = $1 RETURNING *`,
+    [id, ...values]
+  )
+  return rows[0]
+}
+
+export async function deleteCertificate(id: number): Promise<void> {
+  await pool.query('DELETE FROM certificates WHERE id = $1', [id])
+}
+
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
 export async function getAllProjects(): Promise<AdminProjectRow[]> {
@@ -402,6 +599,9 @@ export async function deleteTechItem(id: number): Promise<void> {
 
 export async function getDashboardStats(): Promise<{
   experiences: number
+  educations: number
+  achievements: number
+  certificates: number
   projects: number
   roles: number
   socials: number
@@ -411,6 +611,9 @@ export async function getDashboardStats(): Promise<{
 }> {
   const results = await Promise.all([
     pool.query<{ count: string }>('SELECT COUNT(*) as count FROM experiences'),
+    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM educations'),
+    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM achievements'),
+    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM certificates'),
     pool.query<{ count: string }>('SELECT COUNT(*) as count FROM projects'),
     pool.query<{ count: string }>('SELECT COUNT(*) as count FROM roles'),
     pool.query<{ count: string }>('SELECT COUNT(*) as count FROM socials'),
@@ -420,11 +623,14 @@ export async function getDashboardStats(): Promise<{
   ])
   return {
     experiences: parseInt(results[0].rows[0].count, 10),
-    projects: parseInt(results[1].rows[0].count, 10),
-    roles: parseInt(results[2].rows[0].count, 10),
-    socials: parseInt(results[3].rows[0].count, 10),
-    techCategories: parseInt(results[4].rows[0].count, 10),
-    techItems: parseInt(results[5].rows[0].count, 10),
-    quickStats: parseInt(results[6].rows[0].count, 10),
+    educations: parseInt(results[1].rows[0].count, 10),
+    achievements: parseInt(results[2].rows[0].count, 10),
+    certificates: parseInt(results[3].rows[0].count, 10),
+    projects: parseInt(results[4].rows[0].count, 10),
+    roles: parseInt(results[5].rows[0].count, 10),
+    socials: parseInt(results[6].rows[0].count, 10),
+    techCategories: parseInt(results[7].rows[0].count, 10),
+    techItems: parseInt(results[8].rows[0].count, 10),
+    quickStats: parseInt(results[9].rows[0].count, 10),
   }
 }

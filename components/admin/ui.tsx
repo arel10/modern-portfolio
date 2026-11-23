@@ -200,12 +200,12 @@ export function Field({
 }) {
   return (
     <label className={cn('block', className)}>
-      <span className="mb-1.5 flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+      <span className="mb-1.5 flex items-center gap-1 text-sm font-semibold text-text-primary">
         {label}
-        {required && <span className="text-red-500">*</span>}
+        {required && <span className="text-rose-500">*</span>}
       </span>
       {children}
-      {hint && <span className="mt-1 block text-xs text-gray-400 dark:text-gray-500">{hint}</span>}
+      {hint && <span className="mt-1 block text-xs text-text-secondary font-medium">{hint}</span>}
     </label>
   )
 }
@@ -230,14 +230,16 @@ export function Toggle({
       disabled={disabled}
       onClick={() => onChange(!checked)}
       className={cn(
-        'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-offset-gray-900',
-        checked ? 'bg-blue-600 dark:bg-blue-500' : 'bg-gray-300 dark:bg-gray-700'
+        'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-offset-black',
+        checked ? 'bg-text-primary dark:bg-white' : 'bg-text-secondary/25 dark:bg-white/15'
       )}
     >
       <span
         className={cn(
-          'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
-          checked ? 'translate-x-6' : 'translate-x-1'
+          'inline-block h-4 w-4 transform rounded-full shadow transition-transform',
+          checked
+            ? 'translate-x-6 bg-background dark:bg-black'
+            : 'translate-x-1 bg-white dark:bg-white/80'
         )}
       />
     </button>
@@ -261,13 +263,13 @@ export function Checkbox({
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
-        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-950"
+        className="mt-0.5 h-4 w-4 rounded border-text-secondary/30 accent-text-primary focus:ring-text-primary dark:border-white/20 dark:bg-[#121215]"
       />
       <span>
-        <span className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="block text-sm font-medium text-text-primary">
           {label}
         </span>
-        {hint && <span className="block text-xs text-gray-400 dark:text-gray-500">{hint}</span>}
+        {hint && <span className="block text-xs text-text-secondary">{hint}</span>}
       </span>
     </label>
   )
@@ -277,10 +279,10 @@ export function Checkbox({
 
 const alertTones = {
   success:
-    'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300',
+    'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400',
   error:
-    'border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300',
-  info: 'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-300',
+    'border-rose-500/20 bg-rose-500/10 text-rose-600 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-400',
+  info: 'border-blue-500/20 bg-blue-500/10 text-blue-600 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-400',
 }
 
 export function Alert({
@@ -296,7 +298,7 @@ export function Alert({
     <div
       role={tone === 'error' ? 'alert' : 'status'}
       className={cn(
-        'flex items-start gap-3 rounded-xl border px-4 py-3 text-sm',
+        'flex items-start gap-3 rounded-xl border px-4 py-3 text-sm font-medium backdrop-blur-md',
         alertTones[tone]
       )}
     >
@@ -322,8 +324,8 @@ export function Alert({
 export function LoadingState({ label = 'Memuat data...' }: { label?: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 px-6 py-14 text-center">
-      <span className="h-7 w-7 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 dark:border-gray-700 dark:border-t-blue-400" />
-      <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+      <span className="h-7 w-7 animate-spin rounded-full border-2 border-text-secondary/20 border-t-text-primary" />
+      <p className="text-sm font-medium text-text-secondary">{label}</p>
     </div>
   )
 }
@@ -341,12 +343,12 @@ export function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500">
+      <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-text-secondary/15 bg-thirdary/40 text-text-secondary">
         <Icon name={icon} className="h-6 w-6" />
       </span>
-      <h3 className="mt-4 text-sm font-semibold text-gray-900 dark:text-white">{title}</h3>
+      <h3 className="mt-4 text-sm font-bold text-text-primary">{title}</h3>
       {description && (
-        <p className="mt-1 max-w-sm text-sm text-gray-500 dark:text-gray-400">{description}</p>
+        <p className="mt-1 max-w-sm text-xs font-medium text-text-secondary leading-relaxed">{description}</p>
       )}
       {action && <div className="mt-5">{action}</div>}
     </div>
@@ -354,12 +356,12 @@ export function EmptyState({
 }
 
 const badgeTones = {
-  gray: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300',
-  blue: 'bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300',
-  green: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300',
-  amber: 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300',
-  red: 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-300',
-  violet: 'bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-300',
+  gray: 'bg-text-secondary/10 text-text-secondary border border-text-secondary/15',
+  blue: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20',
+  green: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
+  amber: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20',
+  red: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20',
+  violet: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20',
 }
 
 export function Badge({
@@ -374,7 +376,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium',
+        'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold',
         badgeTones[tone],
         className
       )}
@@ -432,7 +434,7 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
       <div
-        className="absolute inset-0 bg-gray-950/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -441,22 +443,22 @@ export function Modal({
         aria-modal="true"
         aria-label={title}
         className={cn(
-          'relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900 sm:rounded-2xl',
+          'relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-2xl border border-text-secondary/15 bg-background shadow-2xl dark:border-white/10 dark:bg-[#121215]/95 dark:backdrop-blur-2xl sm:rounded-2xl',
           modalSizes[size]
         )}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-gray-200 px-5 py-4 dark:border-gray-800">
+        <div className="flex items-start justify-between gap-4 border-b border-text-secondary/15 px-6 py-4 dark:border-white/10">
           <div className="min-w-0">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-white">{title}</h2>
+            <h2 className="text-base font-bold text-text-primary">{title}</h2>
             {description && (
-              <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">{description}</p>
+              <p className="mt-0.5 text-xs font-medium text-text-secondary">{description}</p>
             )}
           </div>
           <IconButton icon="x" label="Tutup" onClick={onClose} />
         </div>
-        <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && (
-          <div className="flex flex-wrap justify-end gap-2 border-t border-gray-200 bg-gray-50/60 px-5 py-4 dark:border-gray-800 dark:bg-gray-950/40">
+          <div className="flex flex-wrap justify-end gap-2 border-t border-text-secondary/15 bg-thirdary/20 px-6 py-4 dark:border-white/10 dark:bg-white/[0.02]">
             {footer}
           </div>
         )}
@@ -500,10 +502,10 @@ export function ConfirmDialog({
       }
     >
       <div className="flex gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400">
           <Icon name="alert" className="h-5 w-5" />
         </span>
-        <div className="text-sm text-gray-600 dark:text-gray-300">{message}</div>
+        <div className="text-sm font-medium text-text-secondary">{message}</div>
       </div>
     </Modal>
   )

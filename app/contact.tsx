@@ -182,21 +182,21 @@ export default function Contact({ profile, socials }: ContactProps) {
   void triggerAlert
 
   return (
-    <section id="contacts" className="w-full max-w-7xl mx-auto py-24 md:py-32 cursor-default bg-background relative overflow-hidden border-t border-text-secondary/10">
+    <section id="contacts" className="w-full max-w-[1440px] mx-auto py-16 md:py-24 cursor-default bg-background relative overflow-hidden border-t border-text-secondary/10">
       <FadeDown>
-        <div className="max-w-7xl mx-auto px-6 md:px-12 mb-16 md:mb-24 w-full text-left">
-          <h2 className="text-sm font-bold tracking-[0.2em] text-text-secondary uppercase mb-4">Get In Touch</h2>
-          <h3 className="text-4xl md:text-5xl lg:text-6xl font-black text-text-primary tracking-tighter">Contact Me</h3>
+        <div className="px-6 sm:px-10 lg:px-16 mb-10 md:mb-14 w-full text-left">
+          <h2 className="text-sm font-bold tracking-[0.2em] text-text-secondary uppercase mb-3">Get In Touch</h2>
+          <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-text-primary tracking-tighter">Contact Me</h3>
         </div>
       </FadeDown>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 w-full">
+      <div className="px-6 sm:px-10 lg:px-16 w-full">
         <FadeDown delay={0.2}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Google Maps Embed */}
             <div className="bg-background border border-text-secondary/20 rounded-3xl overflow-hidden h-[400px] lg:h-auto min-h-[400px] shadow-xl hover:border-text-primary transition-colors duration-500 relative group">
               <div className="absolute top-4 left-4 z-10 bg-background/90 backdrop-blur-md px-4 py-2 rounded-xl border border-text-secondary/20 shadow-lg pointer-events-none">
-                <p className="text-sm font-bold text-text-primary">📍 {profile.location_name}</p>
+                <p className="text-sm font-bold text-text-primary">{profile.location_name}</p>
                 <p className="text-xs font-medium text-text-secondary">{profile.location_city}</p>
               </div>
               <iframe

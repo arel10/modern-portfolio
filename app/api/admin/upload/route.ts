@@ -2,14 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAdminFromRequest } from '@/lib/admin-auth'
 import fs from 'node:fs'
 import path from 'node:path'
+import sharp from 'sharp'
 
-// Allowed file types
+// Allowed file types (termasuk foto mentah HP: HEIC/HEIF, JPEG, PNG, WEBP, GIF, SVG, PDF)
 const ALLOWED_MIME_TYPES = new Set([
   'image/jpeg',
   'image/png',
   'image/webp',
   'image/svg+xml',
   'image/gif',
+  'image/heic',
+  'image/heif',
   'application/pdf',
 ])
 
@@ -20,12 +23,13 @@ const ALLOWED_EXTENSIONS = new Set([
   '.webp',
   '.svg',
   '.gif',
+  '.heic',
+  '.heif',
   '.pdf',
 ])
 
-// Maximum file size limits
-const MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024 // 2 MB
-const MAX_DOC_SIZE_BYTES = 5 * 1024 * 1024 // 5 MB
+// Batas aman ukuran file hingga 50MB (tanpa batas praktis untuk foto kamera HP)
+const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024 // 50 MB
 
 export async function POST(req: NextRequest) {
   const admin = await getAdminFromRequest(req)
@@ -51,22 +55,18 @@ export async function POST(req: NextRequest) {
     if (!isExtAllowed && !isMimeAllowed) {
       return NextResponse.json(
         {
-          error: `Format file "${ext || 'unknown'}" tidak didukung. Harap unggah file foto (JPG, PNG, WEBP, SVG) atau PDF.`,
+          error: `Format file "${ext || 'unknown'}" tidak didukung. Harap unggah file foto (JPG, PNG, WEBP, HEIC, SVG) atau dokumen PDF.`,
         },
         { status: 400 }
       )
     }
 
-    // 2. Validasi Ukuran File (Maksimal 2MB untuk gambar, 5MB untuk dokumen PDF)
-    const isPdf = ext === '.pdf' || mime === 'application/pdf'
-    const maxSizeBytes = isPdf ? MAX_DOC_SIZE_BYTES : MAX_IMAGE_SIZE_BYTES
-    const maxSizeLabel = isPdf ? '5 MB' : '2 MB'
-
-    if (file.size > maxSizeBytes) {
+    // 2. Validasi Batas Maksimal (50MB)
+    if (file.size > MAX_FILE_SIZE_BYTES) {
       const actualSizeMB = (file.size / (1024 * 1024)).toFixed(2)
       return NextResponse.json(
         {
-          error: `Ukuran file terlalu besar (${actualSizeMB} MB). Batas maksimal yang diizinkan adalah ${maxSizeLabel}.`,
+          error: `Ukuran file terlalu besar (${actualSizeMB} MB). Batas maksimal adalah 50 MB.`,
         },
         { status: 400 }
       )
@@ -78,33 +78,73 @@ export async function POST(req: NextRequest) {
       fs.mkdirSync(uploadsDir, { recursive: true })
     }
 
-    // 4. Generate nama file unik & aman
-    const rawBaseName = path.basename(file.name, ext)
-    const cleanBaseName = rawBaseName
-      .toLowerCase()
-      .replace(/[^a-z0-9_-]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
-      .slice(0, 30) || 'upload'
-
-    const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
-    const finalFilename = `${cleanBaseName}-${uniqueSuffix}${ext}`
-    const targetFilePath = path.join(uploadsDir, finalFilename)
-
-    // 5. Tulis file ke disk
+    // 4. Baca file ke buffer
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
-    await fs.promises.writeFile(targetFilePath, buffer)
+
+    const isPdf = ext === '.pdf' || mime === 'application/pdf'
+    const isSvg = ext === '.svg' || mime === 'image/svg+xml'
+
+    let finalBuffer: Buffer = buffer
+    let outputExt = ext
+    let wasCompressed = false
+
+    // 5. Kompresi otomatis di backend menggunakan Sharp untuk foto/gambar
+    if (!isPdf && !isSvg) {
+      try {
+        finalBuffer = await sharp(buffer)
+          .rotate() // Membaca EXIF orientation kamera HP agar foto tidak miring/terbalik
+          .resize({
+            width: 1920,
+            height: 1920,
+            fit: 'inside',
+            withoutEnlargement: true,
+          })
+          .webp({ quality: 82, effort: 4 })
+          .toBuffer()
+
+        outputExt = '.webp'
+        wasCompressed = true
+      } catch (sharpError) {
+        console.warn('Sharp compression failed, fallback to original buffer:', sharpError)
+        finalBuffer = buffer
+        outputExt = ext
+      }
+    }
+
+    // 6. Generate nama file unik & aman
+    const rawBaseName = path.basename(file.name, ext)
+    const cleanBaseName =
+      rawBaseName
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 30) || 'upload'
+
+    const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
+    const finalFilename = `${cleanBaseName}-${uniqueSuffix}${outputExt}`
+    const targetFilePath = path.join(uploadsDir, finalFilename)
+
+    // 7. Simpan file ke disk
+    await fs.promises.writeFile(targetFilePath, finalBuffer)
 
     const publicUrl = `/uploads/${finalFilename}`
+
+    const originalKB = (file.size / 1024).toFixed(0)
+    const finalKB = (finalBuffer.length / 1024).toFixed(0)
 
     return NextResponse.json({
       success: true,
       url: publicUrl,
       filename: finalFilename,
       originalName: file.name,
-      size: file.size,
-      message: 'Foto berhasil diunggah!',
+      originalSize: file.size,
+      compressedSize: finalBuffer.length,
+      wasCompressed,
+      message: wasCompressed
+        ? `Foto berhasil dikompresi otomatis (${originalKB}KB ➔ ${finalKB}KB)!`
+        : 'File berhasil diunggah!',
     })
   } catch (error) {
     console.error('Upload error:', error)

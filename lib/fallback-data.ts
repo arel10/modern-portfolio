@@ -9,6 +9,9 @@ import type {
   QuickStatRow,
   SocialRow,
   ExperienceRow,
+  EducationRow,
+  AchievementRow,
+  CertificateRow,
   ProjectRow,
 } from './db'
 
@@ -95,6 +98,78 @@ export const FALLBACK_EXPERIENCES: ExperienceRow[] = [
       'Mengembangkan sistem berbasis web untuk Dinas Kehutanan Provinsi Sumatera Barat, termasuk sistem manajemen kenaikan gaji dan sistem cuti/izin karyawan.',
     skills: ['React.js', 'JavaScript', 'REST API', 'Government System'],
     sort_order: 4,
+  },
+]
+
+export const FALLBACK_EDUCATIONS: EducationRow[] = [
+  {
+    id: 1,
+    institution: 'Politeknik Negeri Padang',
+    degree: 'Sarjana Terapan (D4)',
+    field_of_study: 'Rekayasa Perangkat Lunak (Software Engineering)',
+    date_range: '2021 – 2025',
+    grade: 'IPK 3.44 / 4.00',
+    description:
+      'Fokus pada rekayasa perangkat lunak, arsitektur web modern, basis data relasional, dan pengembangan sistem berskala besar. Aktif dalam proyek penelitian dan pengembangan aplikasi SaaS.',
+    image_url: '/images/hero.jpg',
+    skills: ['Software Engineering', 'Fullstack Development', 'Database Design', 'SaaS Architecture', 'Algorithms & Data Structures'],
+    sort_order: 1,
+  },
+]
+
+export const FALLBACK_ACHIEVEMENTS: AchievementRow[] = [
+  {
+    id: 1,
+    title: 'Publikasi Jurnal Ilmiah: Machine Learning untuk Prediksi Churn Nasabah Bank Sampah Digital',
+    category: 'jurnal',
+    issuer: 'Jurnal Teknologi Informasi & Ilmu Komputer (JTIIK)',
+    date: 'Desember 2024',
+    description:
+      'Penelitian implementasi algoritma Random Forest Classifier dalam memprediksi customer churn rate pada platform bank sampah digital dengan tingkat akurasi mencapai 87.82%.',
+    link_url: 'https://doi.org/10.25126/jtiik',
+    image_url: '/images/portofolio.jpeg',
+    skills: ['Machine Learning', 'Python', 'Random Forest', 'Data Science', 'Scikit-Learn'],
+    sort_order: 1,
+  },
+  {
+    id: 2,
+    title: 'Juara 1 Hackathon Inovasi Digital Nasional — Smart Waste Management',
+    category: 'prestasi',
+    issuer: 'Kementerian Komunikasi dan Digital RI',
+    date: 'November 2024',
+    description:
+      'Memimpin tim pengembangan solusi digital bank sampah berbasis IoT dan mobile app yang berhasil memenangkan peringkat pertama dari 150+ tim mahasiswa se-Indonesia.',
+    link_url: '#',
+    image_url: '/images/hero.jpg',
+    skills: ['Product Design', 'Next.js', 'Flutter', 'IoT Integration', 'Presentation Pitch'],
+    sort_order: 2,
+  },
+]
+
+export const FALLBACK_CERTIFICATES: CertificateRow[] = [
+  {
+    id: 1,
+    title: 'Associate Cloud Engineer Certification',
+    issuer: 'Google Cloud',
+    issue_date: 'November 2024',
+    expiration_date: 'November 2027',
+    credential_id: 'GCP-ACE-892410',
+    credential_url: 'https://www.credential.net',
+    image_url: '/images/portofolio.jpeg',
+    skills: ['Google Cloud Platform', 'Kubernetes', 'Compute Engine', 'Cloud Architecture', 'IAM & Security'],
+    sort_order: 1,
+  },
+  {
+    id: 2,
+    title: 'Menjadi Back-End Developer Expert',
+    issuer: 'Dicoding Indonesia',
+    issue_date: 'Agustus 2024',
+    expiration_date: 'Tidak Ada Kadaluarsa',
+    credential_id: 'DICODING-BACKEND-7731',
+    credential_url: 'https://www.dicoding.com/certificates',
+    image_url: '/images/jadibotwa.jpeg',
+    skills: ['Node.js', 'PostgreSQL', 'Clean Architecture', 'RESTful API', 'Testing & CI/CD'],
+    sort_order: 2,
   },
 ]
 

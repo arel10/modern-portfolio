@@ -31,6 +31,9 @@ export type IconName =
   | 'eyeOff'
   | 'upload'
   | 'file'
+  | 'academic'
+  | 'trophy'
+  | 'certificate'
 
 const paths: Record<IconName, ReactNode> = {
   dashboard: (
@@ -52,6 +55,28 @@ const paths: Record<IconName, ReactNode> = {
       <rect x="3" y="7" width="18" height="13" rx="2" />
       <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
       <path d="M3 12h18" />
+    </>
+  ),
+  academic: (
+    <>
+      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+      <path d="M6 12v5c3 3 9 3 12 0v-5" />
+    </>
+  ),
+  trophy: (
+    <>
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+      <path d="M4 22h16" />
+      <path d="M10 14.66V17c0 .55-.45 1-1 1H7" />
+      <path d="M14 14.66V17c0 .55.45 1 1 1h2" />
+      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+    </>
+  ),
+  certificate: (
+    <>
+      <circle cx="12" cy="8" r="5" />
+      <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
     </>
   ),
   rocket: (

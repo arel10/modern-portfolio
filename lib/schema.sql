@@ -90,6 +90,66 @@ CREATE TABLE IF NOT EXISTS experiences (
 );
 
 -- ============================================================
+-- TABLE: educations
+-- Riwayat pendidikan & almamater
+-- ============================================================
+CREATE TABLE IF NOT EXISTS educations (
+  id              SERIAL PRIMARY KEY,
+  institution     VARCHAR(200) NOT NULL,
+  degree          VARCHAR(200) NOT NULL,
+  field_of_study  VARCHAR(200),
+  date_range      VARCHAR(100) NOT NULL,
+  grade           VARCHAR(50),
+  description     TEXT,
+  image_url       VARCHAR(500),
+  skills          TEXT[]       NOT NULL DEFAULT '{}',
+  sort_order      INT          NOT NULL DEFAULT 0,
+  is_active       BOOLEAN      NOT NULL DEFAULT TRUE,
+  created_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+-- ============================================================
+-- TABLE: achievements
+-- Pencapaian, publikasi jurnal ilmiah, kompetisi, dan penghargaan
+-- ============================================================
+CREATE TABLE IF NOT EXISTS achievements (
+  id          SERIAL PRIMARY KEY,
+  title       VARCHAR(250) NOT NULL,
+  category    VARCHAR(50)  NOT NULL DEFAULT 'prestasi', -- 'jurnal', 'prestasi', 'penghargaan', 'lainnya'
+  issuer      VARCHAR(200) NOT NULL,
+  date        VARCHAR(100) NOT NULL,
+  description TEXT,
+  link_url    VARCHAR(500),
+  image_url   VARCHAR(500),
+  skills      TEXT[]       NOT NULL DEFAULT '{}',
+  sort_order  INT          NOT NULL DEFAULT 0,
+  is_active   BOOLEAN      NOT NULL DEFAULT TRUE,
+  created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+-- ============================================================
+-- TABLE: certificates
+-- Sertifikasi profesional, lisensi, dan kredensial
+-- ============================================================
+CREATE TABLE IF NOT EXISTS certificates (
+  id              SERIAL PRIMARY KEY,
+  title           VARCHAR(250) NOT NULL,
+  issuer          VARCHAR(200) NOT NULL,
+  issue_date      VARCHAR(100) NOT NULL,
+  expiration_date VARCHAR(100),
+  credential_id   VARCHAR(150),
+  credential_url  VARCHAR(500),
+  image_url       VARCHAR(500),
+  skills          TEXT[]       NOT NULL DEFAULT '{}',
+  sort_order      INT          NOT NULL DEFAULT 0,
+  is_active       BOOLEAN      NOT NULL DEFAULT TRUE,
+  created_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+-- ============================================================
 -- TABLE: projects
 -- Portofolio karya / proyek
 -- ============================================================
@@ -290,6 +350,20 @@ INSERT INTO experiences (company, role, date_range, description, skills, sort_or
   'Mengembangkan dan memelihara sistem berbasis web internal untuk Dinas Kehutanan Provinsi Sumatera Barat. Membangun sistem manajemen kenaikan gaji berkala dan sistem manajemen cuti/izin karyawan untuk mendukung administrasi kepegawaian.',
   ARRAY['React.js', 'JavaScript', 'REST API', 'Government System'],
   4
+);
+
+-- Educations
+INSERT INTO educations (institution, degree, field_of_study, date_range, grade, description, image_url, skills, sort_order) VALUES
+(
+  'Politeknik Negeri Padang',
+  'Sarjana Terapan (D4)',
+  'Rekayasa Perangkat Lunak (Software Engineering)',
+  '2021 – 2025',
+  'IPK 3.44 / 4.00',
+  'Fokus pada rekayasa perangkat lunak, arsitektur web modern, basis data relasional, dan pengembangan sistem berskala besar. Aktif dalam proyek penelitian dan pengembangan aplikasi SaaS.',
+  '/images/hero.jpg',
+  ARRAY['Software Engineering', 'Fullstack Development', 'Database Design', 'SaaS Architecture', 'Algorithms & Data Structures'],
+  1
 );
 
 -- Projects

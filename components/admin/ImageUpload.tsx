@@ -19,19 +19,20 @@ export function ImageUpload({
   onChange,
   label = 'Foto / Gambar',
   hint,
-  maxSizeMB = 2,
-  accept = 'image/png,image/jpeg,image/webp,image/svg+xml,image/gif',
+  maxSizeMB = 50,
+  accept = 'image/png,image/jpeg,image/webp,image/svg+xml,image/gif,image/heic,image/heif',
   allowPdf = false,
   className = '',
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [successInfo, setSuccessInfo] = useState('')
   const [manualMode, setManualMode] = useState(false)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const effectiveAccept = allowPdf ? `${accept},application/pdf,.pdf` : accept
-  const effectiveMaxSize = allowPdf && value?.endsWith('.pdf') ? 5 : maxSizeMB
+  const effectiveMaxSize = maxSizeMB
 
   const handleFileProcess = useCallback(
     async (file: File) => {
@@ -49,6 +50,7 @@ export function ImageUpload({
 
       // 2. Perform upload
       setUploading(true)
+      setSuccessInfo('')
       try {
         const formData = new FormData()
         formData.append('file', file)
@@ -58,13 +60,24 @@ export function ImageUpload({
           body: formData,
         })
 
-        const data = (await res.json()) as { url?: string; error?: string }
+        const data = (await res.json()) as {
+          url?: string
+          error?: string
+          message?: string
+          wasCompressed?: boolean
+          originalSize?: number
+          compressedSize?: number
+        }
 
         if (!res.ok) {
           setErrorMsg(data.error || 'Gagal mengunggah file. Silakan coba lagi.')
         } else if (data.url) {
           onChange(data.url)
           setErrorMsg('')
+          if (data.message) {
+            setSuccessInfo(data.message)
+            setTimeout(() => setSuccessInfo(''), 6000)
+          }
         }
       } catch {
         setErrorMsg('Gagal menghubungi server upload. Periksa koneksi Anda.')
@@ -201,12 +214,14 @@ export function ImageUpload({
           } ${uploading ? 'pointer-events-none opacity-60' : ''}`}
         >
           {uploading ? (
-            <div className="flex flex-col items-center gap-3 py-2">
+            <div className="flex flex-col items-center gap-3 py-3">
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-text-primary border-t-transparent" />
               <p className="text-sm font-semibold text-text-primary">
-                Mengunggah foto...
+                Mengunggah & Mengompres Foto...
               </p>
-              <p className="text-xs text-text-secondary">Mohon tunggu sebentar</p>
+              <p className="text-xs text-text-secondary">
+                Server sedang mengoptimasi ukuran gambar otomatis
+              </p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2">
@@ -218,10 +233,10 @@ export function ImageUpload({
               </p>
               <div className="flex flex-wrap items-center justify-center gap-2 mt-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary bg-text-secondary/10 px-2 py-0.5 rounded">
-                  Format: PNG, JPG, WEBP, SVG {allowPdf ? ', PDF' : ''}
+                  Format: PNG, JPG, WEBP, HEIC {allowPdf ? ', PDF' : ''}
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded">
-                  Maks: {effectiveMaxSize} MB
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded inline-flex items-center gap-1">
+                  ⚡ Auto-Kompres Backend
                 </span>
               </div>
             </div>
@@ -237,6 +252,14 @@ export function ImageUpload({
         onChange={onFileChange}
         className="hidden"
       />
+
+      {/* Success / Compression Notification */}
+      {successInfo && (
+        <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-2 text-xs font-medium text-emerald-500 animate-in fade-in">
+          <Icon name="check" className="h-4 w-4 shrink-0" />
+          <span>{successInfo}</span>
+        </div>
+      )}
 
       {/* Error Message */}
       {errorMsg && (

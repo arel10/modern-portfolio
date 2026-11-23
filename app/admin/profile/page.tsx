@@ -72,12 +72,12 @@ function FormSection({
   return (
     <Card className="p-5 sm:p-6">
       <div className="flex items-start gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-text-secondary/15 bg-thirdary/40 text-text-primary dark:border-white/10">
           <Icon name={icon} className="h-4 w-4" />
         </span>
         <div>
-          <h2 className="text-sm font-semibold text-gray-900 dark:text-white">{title}</h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
+          <h2 className="text-sm font-bold text-text-primary">{title}</h2>
+          <p className="text-xs font-medium text-text-secondary">{description}</p>
         </div>
       </div>
       <div className="mt-5">{children}</div>
@@ -284,19 +284,17 @@ function ProfileEditor({ initial }: { initial: Profile }) {
           <div className="grid gap-6">
             <ImageUpload
               label="Foto Avatar / Profil Utama"
-              hint="Unggah foto Anda untuk bagian Hero dan About. Maksimal 2MB (JPG, PNG, WEBP, SVG)."
+              hint="Unggah foto Anda untuk bagian Hero dan About. Bebas ukuran dari HP/kamera, otomatis dikompres oleh server."
               value={form.avatar_url}
               onChange={(url) => set('avatar_url', url)}
-              maxSizeMB={2}
             />
 
             <ImageUpload
               label="File CV / Resume"
-              hint="Unggah file CV/Resume dalam bentuk PDF atau Gambar (Maksimal 5MB)."
+              hint="Unggah file CV/Resume dalam bentuk PDF atau Gambar dokumen."
               value={form.cv_url}
               onChange={(url) => set('cv_url', url)}
               allowPdf
-              maxSizeMB={5}
               accept=".pdf,application/pdf,image/*"
             />
           </div>
@@ -324,9 +322,9 @@ function ProfileEditor({ initial }: { initial: Profile }) {
       {/* Live preview */}
       <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
         <Card className="overflow-hidden">
-          <div className="h-20 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600" />
+          <div className="h-20 bg-gradient-to-br from-text-primary/20 via-text-secondary/10 to-background dark:from-white/10 dark:via-white/5 dark:to-transparent" />
           <div className="-mt-10 px-5 pb-5">
-            <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-gray-100 text-xl font-semibold text-gray-500 shadow-md dark:border-gray-900 dark:bg-gray-800 dark:text-gray-300">
+            <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-4 border-background bg-thirdary text-xl font-bold text-text-primary shadow-md">
               {showAvatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -339,32 +337,32 @@ function ProfileEditor({ initial }: { initial: Profile }) {
                 initials
               )}
             </div>
-            <h3 className="mt-3 text-lg font-semibold text-gray-900 dark:text-white">
+            <h3 className="mt-3 text-lg font-bold text-text-primary">
               {form.full_name || 'Nama lengkap'}
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm font-medium text-text-secondary">
               {form.short_name ? `@${form.short_name}` : 'Nama panggilan'}
             </p>
-            <p className="mt-3 line-clamp-4 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+            <p className="mt-3 line-clamp-4 text-xs font-medium leading-relaxed text-text-secondary">
               {form.bio || 'Bio akan tampil di sini.'}
             </p>
 
-            <dl className="mt-4 space-y-2 border-t border-gray-100 pt-4 text-xs dark:border-gray-800">
+            <dl className="mt-4 space-y-2 border-t border-text-secondary/15 pt-4 text-xs dark:border-white/10">
               <div className="flex items-start gap-2">
-                <Icon name="link" className="mt-0.5 h-3.5 w-3.5 text-gray-400" />
-                <span className="min-w-0 break-all text-gray-600 dark:text-gray-300">
+                <Icon name="link" className="mt-0.5 h-3.5 w-3.5 text-text-secondary" />
+                <span className="min-w-0 break-all text-text-secondary">
                   {form.email || 'Email belum diisi'}
                 </span>
               </div>
               <div className="flex items-start gap-2">
-                <Icon name="user" className="mt-0.5 h-3.5 w-3.5 text-gray-400" />
-                <span className="min-w-0 break-all text-gray-600 dark:text-gray-300">
+                <Icon name="user" className="mt-0.5 h-3.5 w-3.5 text-text-secondary" />
+                <span className="min-w-0 break-all text-text-secondary">
                   {form.phone || 'Telepon belum diisi'}
                 </span>
               </div>
               <div className="flex items-start gap-2">
-                <Icon name="globe" className="mt-0.5 h-3.5 w-3.5 text-gray-400" />
-                <span className="min-w-0 break-words text-gray-600 dark:text-gray-300">
+                <Icon name="globe" className="mt-0.5 h-3.5 w-3.5 text-text-secondary" />
+                <span className="min-w-0 break-words text-text-secondary">
                   {form.location_city || form.location_name || 'Lokasi belum diisi'}
                 </span>
               </div>
@@ -375,7 +373,7 @@ function ProfileEditor({ initial }: { initial: Profile }) {
                 href={form.cv_url}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-text-secondary/20 px-3 py-2 text-xs font-bold text-text-primary transition hover:bg-text-secondary/10 dark:border-white/15 dark:hover:bg-white/5"
               >
                 <Icon name="eye" className="h-4 w-4" />
                 Lihat CV
@@ -384,14 +382,14 @@ function ProfileEditor({ initial }: { initial: Profile }) {
           </div>
         </Card>
 
-        <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-4 text-xs leading-relaxed text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/5 dark:text-blue-300">
-          <p className="flex items-center gap-2 font-semibold">
+        <div className="rounded-2xl border border-text-secondary/15 bg-thirdary/30 p-4 text-xs font-medium leading-relaxed text-text-secondary dark:border-white/10 dark:bg-white/[0.02]">
+          <p className="flex items-center gap-2 font-bold text-text-primary">
             <Icon name="sparkles" className="h-4 w-4" />
             Tips
           </p>
           <p className="mt-1.5">
             Perubahan langsung tersimpan ke database setelah tombol simpan ditekan.
-            Pastikan path gambar diawali dengan <code>/</code> agar dapat dimuat.
+            Halaman publik akan otomatis diperbarui.
           </p>
         </div>
       </aside>

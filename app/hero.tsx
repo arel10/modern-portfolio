@@ -81,29 +81,11 @@ export default function Hero({ profile, roles, stats, socials }: HeroProps) {
     },
   ]
 
-  const statIcons = [
-    (
-      <svg key="code" className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-      </svg>
-    ),
-    (
-      <svg key="folder" className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-      </svg>
-    ),
-    (
-      <svg key="sparkles" className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
-  ]
-
   const currentText = texts[index % (texts.length || 1)] ?? ""
 
   return (
     <>
-      <section id="home" className="w-full max-w-7xl mx-auto cursor-default grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center px-6 md:px-12 py-24 md:py-32 overflow-hidden">
+      <section id="home" className="w-full max-w-[1440px] mx-auto cursor-default grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center px-6 sm:px-10 lg:px-16 py-16 md:py-24 overflow-hidden">
         <FadeLeft>
           <div className="flex flex-col gap-2">
             <div>
@@ -129,15 +111,12 @@ export default function Hero({ profile, roles, stats, socials }: HeroProps) {
                   <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
                 </svg>
               </button>
-              <a href={profile.cv_url} download className="cursor-pointer text-sm md:text-base font-bold border-2 border-text-secondary/20 hover:border-text-primary text-text-primary px-8 py-4 rounded-xl flex flex-row items-center justify-center gap-3 hover:-translate-y-1.5 hover:scale-[1.02] hover:bg-thirdary/40 transition-all duration-300 ease-out bg-background/50 backdrop-blur-sm shadow-[0_4px_10px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_10px_rgba(255,255,255,0.02)]">
+              <a href={profile.cv_url} download className="cursor-pointer text-sm md:text-base font-bold border-2 border-text-secondary/20 hover:border-text-primary text-text-primary px-8 py-4 rounded-xl flex flex-row items-center justify-center hover:-translate-y-1.5 hover:scale-[1.02] hover:bg-thirdary/40 transition-all duration-300 ease-out bg-background/50 backdrop-blur-sm shadow-[0_4px_10px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_10px_rgba(255,255,255,0.02)]">
                 Download CV
-                <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-y-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4" />
-                </svg>
               </a>
             </div>
 
-            <div className="mt-12 pt-8 border-t border-text-secondary/10">
+            <div className="hidden md:block mt-12 pt-8 border-t border-text-secondary/10">
               <span className="text-xs uppercase tracking-widest font-bold text-text-secondary mb-4 block">Connect</span>
               <div className="flex flex-row gap-4">
                 {socialMediaList.map((item, i) => (
@@ -150,26 +129,39 @@ export default function Hero({ profile, roles, stats, socials }: HeroProps) {
           </div>
         </FadeLeft>
 
-        <FadeRight>
-          <div className="flex flex-col items-center justify-center relative mt-12 md:mt-0">
-            <div className="absolute inset-0 bg-linear-to-tr from-thirdary to-background rounded-full scale-110 opacity-50 blur-2xl"></div>
+        <div className="hidden md:block">
+          <FadeRight>
+            <div className="flex flex-col items-center justify-center relative mt-12 md:mt-0">
+              <div className="absolute inset-0 bg-linear-to-tr from-thirdary to-background rounded-full scale-110 opacity-50 blur-2xl"></div>
 
-            <div className="relative z-10 p-2 bg-background border border-text-secondary/10 rounded-full shadow-2xl group">
-              <Image src={profile.avatar_url} alt={profile.full_name} width={400} height={400} className="rounded-full object-cover aspect-square floating grayscale hover:grayscale-0 group-hover:grayscale-0 transition-all duration-700 cursor-pointer" priority />
-            </div>
+              <div className="relative z-10 p-2 bg-background border border-text-secondary/10 rounded-full shadow-2xl group">
+                <Image
+                  src={profile.avatar_url || '/images/hero.jpg'}
+                  alt={profile.full_name}
+                  width={400}
+                  height={400}
+                  className="rounded-full object-cover aspect-square floating transition-all duration-700 cursor-pointer"
+                  priority
+                />
+              </div>
 
-            <div className="absolute -bottom-10 md:-bottom-12 -left-4 md:-left-12 z-20 flex flex-col gap-3">
-              {stats.map((stat, i) => (
-                <div className="floating flex items-center gap-3 bg-background/90 backdrop-blur-md border border-text-secondary/10 p-3 pr-5 rounded-2xl shadow-xl hover:-translate-y-1 transition-transform duration-300 animate-in fade-in slide-in-from-bottom-5" style={{ animationDelay: `${i * 150}ms` }} key={i}>
-                  <div className="bg-text-primary text-background p-2 rounded-xl">
-                    {statIcons[i % statIcons.length]}
+              <div className="absolute -bottom-10 md:-bottom-12 -left-4 md:-left-12 z-20 flex flex-col gap-2.5">
+                {stats.map((stat, i) => (
+                  <div
+                    className="floating flex items-center gap-2.5 bg-background/90 backdrop-blur-md border border-text-secondary/15 px-4 py-2.5 rounded-2xl shadow-xl hover:-translate-y-1 transition-transform duration-300 animate-in fade-in slide-in-from-bottom-5"
+                    style={{ animationDelay: `${i * 150}ms` }}
+                    key={i}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-text-primary" />
+                    <span className="text-xs md:text-sm font-bold text-text-primary whitespace-nowrap">
+                      {stat.message}
+                    </span>
                   </div>
-                  <span className="text-xs md:text-sm font-semibold text-text-primary whitespace-nowrap">{stat.message}</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </FadeRight>
+          </FadeRight>
+        </div>
       </section>
     </>
   )

@@ -132,6 +132,45 @@ export interface ExperienceRow {
   sort_order: number
 }
 
+export interface EducationRow {
+  id: number
+  institution: string
+  degree: string
+  field_of_study: string | null
+  date_range: string
+  grade: string | null
+  description: string | null
+  image_url: string | null
+  skills: string[]
+  sort_order: number
+}
+
+export interface AchievementRow {
+  id: number
+  title: string
+  category: string
+  issuer: string
+  date: string
+  description: string | null
+  link_url: string | null
+  image_url: string | null
+  skills: string[]
+  sort_order: number
+}
+
+export interface CertificateRow {
+  id: number
+  title: string
+  issuer: string
+  issue_date: string
+  expiration_date: string | null
+  credential_id: string | null
+  credential_url: string | null
+  image_url: string | null
+  skills: string[]
+  sort_order: number
+}
+
 export interface ProjectRow {
   id: number
   title: string
@@ -210,6 +249,27 @@ export async function getSocialByPlatform(platform: string): Promise<SocialRow |
 export async function getExperiences(): Promise<ExperienceRow[]> {
   const { rows } = await pool.query<ExperienceRow>(
     'SELECT * FROM experiences WHERE is_active = TRUE ORDER BY sort_order ASC'
+  )
+  return rows
+}
+
+export async function getEducations(): Promise<EducationRow[]> {
+  const { rows } = await pool.query<EducationRow>(
+    'SELECT * FROM educations WHERE is_active = TRUE ORDER BY sort_order ASC'
+  )
+  return rows
+}
+
+export async function getAchievements(): Promise<AchievementRow[]> {
+  const { rows } = await pool.query<AchievementRow>(
+    'SELECT * FROM achievements WHERE is_active = TRUE ORDER BY sort_order ASC'
+  )
+  return rows
+}
+
+export async function getCertificates(): Promise<CertificateRow[]> {
+  const { rows } = await pool.query<CertificateRow>(
+    'SELECT * FROM certificates WHERE is_active = TRUE ORDER BY sort_order ASC'
   )
   return rows
 }

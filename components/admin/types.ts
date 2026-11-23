@@ -32,6 +32,53 @@ export interface Experience {
   updated_at?: string
 }
 
+export interface Education {
+  id: number
+  institution: string
+  degree: string
+  field_of_study: string | null
+  date_range: string
+  grade: string | null
+  description: string | null
+  image_url: string | null
+  skills: string[]
+  sort_order: number
+  is_active: boolean
+  updated_at?: string
+}
+
+export interface Achievement {
+  id: number
+  title: string
+  category: string
+  issuer: string
+  date: string
+  description: string | null
+  link_url: string | null
+  image_url: string | null
+  skills: string[]
+  sort_order: number
+  is_active: boolean
+  created_at?: string
+  updated_at?: string
+}
+
+export interface Certificate {
+  id: number
+  title: string
+  issuer: string
+  issue_date: string
+  expiration_date: string | null
+  credential_id: string | null
+  credential_url: string | null
+  image_url: string | null
+  skills: string[]
+  sort_order: number
+  is_active: boolean
+  created_at?: string
+  updated_at?: string
+}
+
 export interface Project {
   id: number
   title: string
@@ -98,6 +145,9 @@ export interface QuickStat {
 
 export interface DashboardStats {
   experiences: number
+  educations: number
+  achievements: number
+  certificates: number
   projects: number
   roles: number
   socials: number
