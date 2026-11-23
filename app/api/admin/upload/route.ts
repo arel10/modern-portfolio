@@ -3,6 +3,9 @@ import { getAdminFromRequest } from '@/lib/admin-auth'
 import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
+import { put } from '@vercel/blob'
+
+export const dynamic = 'force-dynamic'
 
 // Allowed file types (termasuk foto mentah HP: HEIC/HEIF, JPEG, PNG, WEBP, GIF, SVG, PDF)
 const ALLOWED_MIME_TYPES = new Set([
@@ -72,13 +75,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // 3. Pastikan direktori public/uploads ada
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true })
-    }
-
-    // 4. Baca file ke buffer
+    // 3. Baca file ke buffer
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
@@ -89,7 +86,7 @@ export async function POST(req: NextRequest) {
     let outputExt = ext
     let wasCompressed = false
 
-    // 5. Kompresi otomatis di backend menggunakan Sharp untuk foto/gambar
+    // 4. Kompresi otomatis di backend menggunakan Sharp untuk foto/gambar
     if (!isPdf && !isSvg) {
       try {
         finalBuffer = await sharp(buffer)
@@ -112,7 +109,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 6. Generate nama file unik & aman
+    // 5. Generate nama file unik & aman
     const rawBaseName = path.basename(file.name, ext)
     const cleanBaseName =
       rawBaseName
@@ -124,28 +121,84 @@ export async function POST(req: NextRequest) {
 
     const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
     const finalFilename = `${cleanBaseName}-${uniqueSuffix}${outputExt}`
-    const targetFilePath = path.join(uploadsDir, finalFilename)
-
-    // 7. Simpan file ke disk
-    await fs.promises.writeFile(targetFilePath, finalBuffer)
-
-    const publicUrl = `/uploads/${finalFilename}`
 
     const originalKB = (file.size / 1024).toFixed(0)
     const finalKB = (finalBuffer.length / 1024).toFixed(0)
 
-    return NextResponse.json({
-      success: true,
-      url: publicUrl,
-      filename: finalFilename,
-      originalName: file.name,
-      originalSize: file.size,
-      compressedSize: finalBuffer.length,
-      wasCompressed,
-      message: wasCompressed
-        ? `Foto berhasil dikompresi otomatis (${originalKB}KB ➔ ${finalKB}KB)!`
-        : 'File berhasil diunggah!',
-    })
+    // 6. Simpan File: Jika di Vercel dengan Vercel Blob (BLOB_READ_WRITE_TOKEN ada)
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const mimeMap: Record<string, string> = {
+        '.webp': 'image/webp',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.png': 'image/png',
+        '.svg': 'image/svg+xml',
+        '.gif': 'image/gif',
+        '.pdf': 'application/pdf',
+      }
+      const contentType = mimeMap[outputExt] || mime
+
+      const blob = await put(`uploads/${finalFilename}`, finalBuffer, {
+        access: 'public',
+        contentType,
+      })
+
+      return NextResponse.json({
+        success: true,
+        url: blob.url,
+        filename: finalFilename,
+        originalName: file.name,
+        originalSize: file.size,
+        compressedSize: finalBuffer.length,
+        wasCompressed,
+        storage: 'vercel-blob',
+        message: wasCompressed
+          ? `Foto berhasil dikompresi (${originalKB}KB ➔ ${finalKB}KB) & tersimpan aman di Vercel Blob Cloud!`
+          : 'File berhasil diunggah ke Vercel Blob Cloud!',
+      })
+    }
+
+    // 7. Simpan File: Fallback ke Local Disk (Development / Server Mandiri)
+    try {
+      const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true })
+      }
+      const targetFilePath = path.join(uploadsDir, finalFilename)
+      await fs.promises.writeFile(targetFilePath, finalBuffer)
+
+      const publicUrl = `/uploads/${finalFilename}`
+
+      return NextResponse.json({
+        success: true,
+        url: publicUrl,
+        filename: finalFilename,
+        originalName: file.name,
+        originalSize: file.size,
+        compressedSize: finalBuffer.length,
+        wasCompressed,
+        storage: 'local',
+        message: wasCompressed
+          ? `Foto berhasil dikompresi otomatis (${originalKB}KB ➔ ${finalKB}KB)!`
+          : 'File berhasil diunggah!',
+      })
+    } catch (fsErr: unknown) {
+      const err = fsErr as { code?: string; message?: string }
+      console.error('File system write error:', err)
+
+      // Deteksi error read-only file system di Vercel serverless jika token Blob belum di-setup
+      if (err?.code === 'EROFS' || process.env.VERCEL) {
+        return NextResponse.json(
+          {
+            error:
+              'Penyimpanan Vercel bersifat read-only. Harap aktifkan Vercel Blob di tab Storage dashboard Vercel Anda (gratis), lalu klik "Connect to Project".',
+          },
+          { status: 500 }
+        )
+      }
+
+      throw fsErr
+    }
   } catch (error) {
     console.error('Upload error:', error)
     return NextResponse.json(

@@ -14,6 +14,87 @@ interface ImageUploadProps {
   className?: string
 }
 
+/**
+ * Kompresi gambar di sisi klien sebelum dikirim ke server.
+ * Ini memastikan foto kamera HP (5MB-25MB) diperkecil menjadi < 1MB,
+ * mencegah error 413 (Content Too Large) di gateway Vercel (batas 4.5MB).
+ */
+async function compressImageClientSide(file: File): Promise<File> {
+  if (typeof window === 'undefined') return file
+
+  // Jangan sentuh file non-gambar (seperti PDF) atau format vektor SVG
+  const isImage = file.type.startsWith('image/')
+  const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg')
+  if (!isImage || isSvg) {
+    return file
+  }
+
+  // Jika ukuran sudah kecil (< 1MB), kirim langsung
+  if (file.size <= 1024 * 1024) {
+    return file
+  }
+
+  return new Promise((resolve) => {
+    const img = new Image()
+    const objectUrl = URL.createObjectURL(file)
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl)
+
+      // Batasi resolusi maksimal 1920px (standar Full HD)
+      const maxDim = 1920
+      let { width, height } = img
+
+      if (width > maxDim || height > maxDim) {
+        if (width > height) {
+          height = Math.round((height * maxDim) / width)
+          width = maxDim
+        } else {
+          width = Math.round((width * maxDim) / height)
+          height = maxDim
+        }
+      }
+
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        resolve(file)
+        return
+      }
+
+      ctx.drawImage(img, 0, 0, width, height)
+
+      // Coba kompres ke format WebP kualitas 0.82 (atau JPEG jika WebP gagal)
+      canvas.toBlob(
+        (blob) => {
+          if (!blob || blob.size >= file.size) {
+            resolve(file)
+            return
+          }
+          const cleanName = file.name.replace(/\.[^/.]+$/, '') + '.webp'
+          const compressed = new File([blob], cleanName, {
+            type: 'image/webp',
+            lastModified: Date.now(),
+          })
+          resolve(compressed)
+        },
+        'image/webp',
+        0.82
+      )
+    }
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl)
+      resolve(file)
+    }
+
+    img.src = objectUrl
+  })
+}
+
 export function ImageUpload({
   value,
   onChange,
@@ -50,23 +131,54 @@ export function ImageUpload({
 
       // 2. Perform upload
       setUploading(true)
-      setSuccessInfo('')
+      setSuccessInfo('Memproses foto...')
       try {
+        // Kompresi otomatis di browser jika foto besar (mencegah error 413 Vercel)
+        let uploadFile = file
+        try {
+          uploadFile = await compressImageClientSide(file)
+        } catch (compErr) {
+          console.warn('Client compression failed, using original file:', compErr)
+        }
+
+        // Batas keras gateway Vercel adalah 4.5 MB
+        if (uploadFile.size > 4.4 * 1024 * 1024) {
+          const mb = (uploadFile.size / (1024 * 1024)).toFixed(2)
+          setErrorMsg(
+            `Ukuran file (${mb} MB) melebihi batas upload serverless (maksimal 4.5 MB). Silakan kompres dokumen terlebih dahulu.`
+          )
+          setUploading(false)
+          return
+        }
+
         const formData = new FormData()
-        formData.append('file', file)
+        formData.append('file', uploadFile)
 
         const res = await fetch('/api/admin/upload', {
           method: 'POST',
           body: formData,
         })
 
-        const data = (await res.json()) as {
+        if (res.status === 413) {
+          setErrorMsg(
+            'Ukuran file terlalu besar untuk gateway server (413 Content Too Large). Maksimal 4.5 MB.'
+          )
+          return
+        }
+
+        let data: {
           url?: string
           error?: string
           message?: string
           wasCompressed?: boolean
           originalSize?: number
           compressedSize?: number
+        } = {}
+
+        try {
+          data = await res.json()
+        } catch {
+          data = { error: 'Format respon server tidak valid.' }
         }
 
         if (!res.ok) {
