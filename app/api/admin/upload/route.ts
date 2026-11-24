@@ -125,8 +125,14 @@ export async function POST(req: NextRequest) {
     const originalKB = (file.size / 1024).toFixed(0)
     const finalKB = (finalBuffer.length / 1024).toFixed(0)
 
-    // 6. Simpan File: Jika di Vercel dengan Vercel Blob (BLOB_READ_WRITE_TOKEN ada)
-    if (process.env.BLOB_READ_WRITE_TOKEN) {
+    // 6. Simpan File: Jika Vercel Blob tersedia (read-write token ATAU OIDC)
+    // Catatan: store yang di-connect lewat dashboard sekarang memakai OIDC
+    // (BLOB_STORE_ID + VERCEL_OIDC_TOKEN), bukan BLOB_READ_WRITE_TOKEN lagi.
+    const isBlobConfigured = Boolean(
+      process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID
+    )
+
+    if (isBlobConfigured || process.env.VERCEL) {
       const mimeMap: Record<string, string> = {
         '.webp': 'image/webp',
         '.jpg': 'image/jpeg',
@@ -137,25 +143,66 @@ export async function POST(req: NextRequest) {
         '.pdf': 'application/pdf',
       }
       const contentType = mimeMap[outputExt] || mime
+      const pathname = `uploads/${finalFilename}`
 
-      const blob = await put(`uploads/${finalFilename}`, finalBuffer, {
-        access: 'public',
-        contentType,
-      })
+      const buildSuccessResponse = (url: string, storage: string) =>
+        NextResponse.json({
+          success: true,
+          url,
+          filename: finalFilename,
+          originalName: file.name,
+          originalSize: file.size,
+          compressedSize: finalBuffer.length,
+          wasCompressed,
+          storage,
+          message: wasCompressed
+            ? `Foto berhasil dikompresi (${originalKB}KB ➔ ${finalKB}KB) & tersimpan aman di Vercel Blob Cloud!`
+            : 'File berhasil diunggah ke Vercel Blob Cloud!',
+        })
 
-      return NextResponse.json({
-        success: true,
-        url: blob.url,
-        filename: finalFilename,
-        originalName: file.name,
-        originalSize: file.size,
-        compressedSize: finalBuffer.length,
-        wasCompressed,
-        storage: 'vercel-blob',
-        message: wasCompressed
-          ? `Foto berhasil dikompresi (${originalKB}KB ➔ ${finalKB}KB) & tersimpan aman di Vercel Blob Cloud!`
-          : 'File berhasil diunggah ke Vercel Blob Cloud!',
-      })
+      try {
+        let blob
+        try {
+          // Store Public: URL bisa langsung diakses dari CDN Vercel.
+          blob = await put(pathname, finalBuffer, {
+            access: 'public',
+            contentType,
+          })
+
+          return buildSuccessResponse(blob.url, 'vercel-blob')
+        } catch (publicErr: unknown) {
+          const message = publicErr instanceof Error ? publicErr.message : String(publicErr)
+
+          // Store Private menolak upload dengan access "public".
+          // Karena mode store tidak bisa diubah, ulangi upload dengan access "private"
+          // lalu sajikan file lewat route proxy /api/blob/... di bawah.
+          const isPrivateStore = /private store|private access|cannot use public access/i.test(
+            message
+          )
+
+          if (!isPrivateStore) {
+            throw publicErr
+          }
+
+          blob = await put(pathname, finalBuffer, {
+            access: 'private',
+            contentType,
+          })
+
+          return buildSuccessResponse(`/api/blob/${pathname}`, 'vercel-blob-private')
+        }
+      } catch (blobErr: unknown) {
+        const message = blobErr instanceof Error ? blobErr.message : String(blobErr)
+        console.error('Vercel Blob upload error:', message)
+
+        return NextResponse.json(
+          {
+            error: `Gagal mengunggah ke Vercel Blob: ${message}. Pastikan Blob store sudah di-connect ke environment Production lalu lakukan Redeploy.`,
+            storage: 'vercel-blob',
+          },
+          { status: 500 }
+        )
+      }
     }
 
     // 7. Simpan File: Fallback ke Local Disk (Development / Server Mandiri)
