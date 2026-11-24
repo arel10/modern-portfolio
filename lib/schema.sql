@@ -159,6 +159,7 @@ CREATE TABLE IF NOT EXISTS projects (
   short_description TEXT          NOT NULL,
   full_description  TEXT,
   image_path        VARCHAR(500)  NOT NULL DEFAULT '/images/portofolio.jpeg',
+  images            TEXT[]        NOT NULL DEFAULT '{}',  -- galeri foto tambahan (sampul tetap image_path)
   created_at_label  VARCHAR(50),                         -- "2025-05-10"
   tech              TEXT[]        NOT NULL DEFAULT '{}',
   features          TEXT[]        NOT NULL DEFAULT '{}',

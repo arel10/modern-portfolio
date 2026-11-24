@@ -9,7 +9,7 @@ import {
   useAdminData,
 } from '@/components/admin/api'
 import { Icon } from '@/components/admin/icons'
-import { ImageUpload } from '@/components/admin/ImageUpload'
+import { ProjectGalleryInput } from '@/components/admin/ProjectGalleryInput'
 import { useToast } from '@/components/admin/ToastContext'
 import {
   Alert,
@@ -35,6 +35,7 @@ interface ProjectFormState {
   short_description: string
   full_description: string
   image_path: string
+  images: string[]
   created_at_label: string
   tech: string
   features: string
@@ -51,6 +52,7 @@ function toForm(item?: Project): ProjectFormState {
     short_description: item?.short_description ?? '',
     full_description: item?.full_description ?? '',
     image_path: item?.image_path ?? '',
+    images: Array.isArray(item?.images) ? item.images : [],
     created_at_label: item?.created_at_label ?? '',
     tech: listToText(item?.tech),
     features: listToText(item?.features),
@@ -124,6 +126,7 @@ function ProjectModal({
         short_description: form.short_description.trim(),
         full_description: form.full_description.trim() || undefined,
         image_path: form.image_path.trim(),
+        images: form.images.filter(Boolean),
         created_at_label: form.created_at_label.trim() || undefined,
         tech: parseList(form.tech),
         features: parseList(form.features),
@@ -208,11 +211,12 @@ function ProjectModal({
           </Field>
         </div>
 
-        <ImageUpload
-          label="Foto Sampul / Screenshot Proyek"
-          hint="Unggah screenshot atau foto proyek (PNG, JPG, WEBP). Bebas ukuran dari HP/kamera, otomatis dikompres oleh server."
-          value={form.image_path}
-          onChange={(url) => set('image_path', url)}
+        <ProjectGalleryInput
+          cover={form.image_path}
+          images={form.images}
+          onChange={({ cover, images }) =>
+            setForm((prev) => ({ ...prev, image_path: cover, images }))
+          }
         />
 
         <Field label="Label tanggal" hint="Contoh: 2025-06-01 atau Juni 2025">

@@ -1,4 +1,4 @@
-import { pool } from './db'
+import { pool, ensureProjectImagesColumn } from './db'
 import type {
   ProfileRow,
   ExperienceRow,
@@ -70,6 +70,7 @@ export interface AdminCertificateRow extends CertificateRow {
 }
 
 export interface AdminProjectRow extends ProjectRow {
+  images: string[]
   full_description: string | null
   is_active: boolean
   updated_at: string
@@ -460,6 +461,7 @@ export async function deleteCertificate(id: number): Promise<void> {
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
 export async function getAllProjects(): Promise<AdminProjectRow[]> {
+  await ensureProjectImagesColumn()
   const { rows } = await pool.query<AdminProjectRow>(
     'SELECT * FROM projects ORDER BY sort_order ASC'
   )
@@ -471,6 +473,7 @@ export async function createProject(data: {
   short_description: string
   full_description?: string
   image_path: string
+  images?: string[]
   created_at_label?: string
   tech: string[]
   features: string[]
@@ -479,15 +482,17 @@ export async function createProject(data: {
   is_private_repo: boolean
   sort_order: number
 }): Promise<AdminProjectRow> {
+  await ensureProjectImagesColumn()
   const { rows } = await pool.query<AdminProjectRow>(
-    `INSERT INTO projects (title, short_description, full_description, image_path, created_at_label,
+    `INSERT INTO projects (title, short_description, full_description, image_path, images, created_at_label,
        tech, features, github_url, live_demo_url, is_private_repo, sort_order)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
     [
       data.title,
       data.short_description,
       data.full_description || null,
       data.image_path,
+      data.images ?? [],
       data.created_at_label || null,
       data.tech,
       data.features,
@@ -504,6 +509,7 @@ export async function updateProject(
   id: number,
   data: Partial<AdminProjectRow>
 ): Promise<AdminProjectRow> {
+  await ensureProjectImagesColumn()
   const fields = Object.keys(data).filter((k) => k !== 'id')
   const values = fields.map((k) => (data as Record<string, unknown>)[k])
   const setClause = fields.map((f, i) => `${f} = $${i + 2}`).join(', ')

@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
       short_description: body.short_description as string,
       full_description: body.full_description as string | undefined,
       image_path: (body.image_path as string) || '',
+      images: parseArr(body.images),
       created_at_label: body.created_at_label as string | undefined,
       tech: parseArr(body.tech),
       features: parseArr(body.features),

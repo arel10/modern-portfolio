@@ -85,6 +85,7 @@ export interface Project {
   short_description: string
   full_description: string | null
   image_path: string
+  images: string[]
   created_at_label: string | null
   tech: string[]
   features: string[]

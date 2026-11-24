@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { adminFetch, getErrorMessage, useAdminData } from '@/components/admin/api'
 import { Icon } from '@/components/admin/icons'
 import { ImageUpload } from '@/components/admin/ImageUpload'
+import { resolveMapsEmbedUrl } from '@/lib/maps'
 import { useToast } from '@/components/admin/ToastContext'
 import {
   Alert,
@@ -91,6 +92,8 @@ function ProfileEditor({ initial }: { initial: Profile }) {
   const [saving, setSaving] = useState(false)
   const [notice, setNotice] = useState<Notice>(null)
   const [failedSrc, setFailedSrc] = useState('')
+
+  const previewMapsUrl = resolveMapsEmbedUrl(form.maps_embed_url)
 
   function set<K extends keyof ProfileForm>(key: K, value: ProfileForm[K]) {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -238,15 +241,30 @@ function ProfileEditor({ initial }: { initial: Profile }) {
               />
             </Field>
             <Field
-              label="URL embed Google Maps"
-              hint="Tempel URL embed dari Google Maps."
+              label="URL / kode embed Google Maps"
+              hint="Bisa tempel link share dari Google Maps (termasuk maps.app.goo.gl), kode <iframe>, atau URL embed. Otomatis dikonversi agar tampil di website."
               className="sm:col-span-2"
             >
               <Input
                 value={form.maps_embed_url}
                 onChange={(event) => set('maps_embed_url', event.target.value)}
-                placeholder="https://maps.google.com/maps?...&output=embed"
+                placeholder="https://www.google.com/maps/place/... atau https://maps.google.com/maps?...&output=embed"
               />
+              {previewMapsUrl ? (
+                <div className="mt-3 overflow-hidden rounded-xl border border-text-secondary/20">
+                  <iframe
+                    src={previewMapsUrl}
+                    title="Pratinjau lokasi"
+                    className="h-44 w-full border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              ) : (
+                <p className="mt-2 text-[11px] font-medium text-text-secondary">
+                  Pratinjau peta akan muncul di sini setelah URL diisi.
+                </p>
+              )}
             </Field>
           </div>
         </FormSection>

@@ -20,6 +20,7 @@ export async function PUT(
     const body = (await req.json()) as Record<string, unknown>
     if (body.tech !== undefined) body.tech = parseArr(body.tech)
     if (body.features !== undefined) body.features = parseArr(body.features)
+    if (body.images !== undefined) body.images = parseArr(body.images)
     const result = await updateProject(Number(id), body)
     revalidatePublicPages()
     return NextResponse.json(result)

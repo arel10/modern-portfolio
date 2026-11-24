@@ -9,6 +9,8 @@ export function revalidatePublicPages() {
     revalidatePath('/', 'page')
     revalidatePath('/', 'layout')
     revalidatePath('/')
+    revalidatePath('/projects/[slug]', 'page')
+    revalidatePath('/sitemap.xml')
   } catch (error) {
     console.error('Error revalidating public pages:', error)
   }

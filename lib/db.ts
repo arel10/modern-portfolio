@@ -176,6 +176,7 @@ export interface ProjectRow {
   title: string
   short_description: string
   image_path: string
+  images?: string[]
   created_at_label: string | null
   tech: string[]
   features: string[]
@@ -275,10 +276,34 @@ export async function getCertificates(): Promise<CertificateRow[]> {
 }
 
 export async function getProjects(): Promise<ProjectRow[]> {
+  await ensureProjectImagesColumn()
   const { rows } = await pool.query<ProjectRow>(
     'SELECT * FROM projects WHERE is_active = TRUE ORDER BY sort_order ASC'
   )
   return rows
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Migrasi ringan: kolom galeri foto project.
+// Dijalankan otomatis (idempotent) supaya database production di Neon
+// tidak perlu diubah manual saat fitur ini pertama kali dipakai.
+// ─────────────────────────────────────────────────────────────────────────────
+
+let projectImagesColumnPromise: Promise<void> | null = null
+
+export function ensureProjectImagesColumn(): Promise<void> {
+  if (!projectImagesColumnPromise) {
+    projectImagesColumnPromise = pool
+      .query(
+        `ALTER TABLE projects ADD COLUMN IF NOT EXISTS images TEXT[] NOT NULL DEFAULT '{}'`
+      )
+      .then(() => undefined)
+      .catch((error) => {
+        projectImagesColumnPromise = null
+        throw error
+      })
+  }
+  return projectImagesColumnPromise
 }
 
 export async function getTechCategoriesWithItems(): Promise<

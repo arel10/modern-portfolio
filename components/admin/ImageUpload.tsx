@@ -19,7 +19,7 @@ interface ImageUploadProps {
  * Ini memastikan foto kamera HP (5MB-25MB) diperkecil menjadi < 1MB,
  * mencegah error 413 (Content Too Large) di gateway Vercel (batas 4.5MB).
  */
-async function compressImageClientSide(file: File): Promise<File> {
+export async function compressImageClientSide(file: File): Promise<File> {
   if (typeof window === 'undefined') return file
 
   // Jangan sentuh file non-gambar (seperti PDF) atau format vektor SVG

@@ -4,6 +4,7 @@ import AlertMessage from "@/components/Alert"
 import FadeDown from "@/components/animations/FadeDown"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+import { resolveMapsEmbedUrl } from "@/lib/maps"
 import type { ProfileRow, SocialRow } from "@/lib/db"
 
 type AlertType = "success" | "error" | "info" | "warning"
@@ -35,6 +36,8 @@ export default function Contact({ profile, socials }: ContactProps) {
 
   const getSocial = (platform: string) =>
     socials.find((s) => s.platform === platform)?.url ?? "#"
+
+  const mapsEmbedUrl = resolveMapsEmbedUrl(profile.maps_embed_url)
 
   const emailAddress = profile.email ?? ""
   const emailHref = emailAddress.startsWith("mailto:") ? emailAddress : `mailto:${emailAddress}`
@@ -199,13 +202,31 @@ export default function Contact({ profile, socials }: ContactProps) {
                 <p className="text-sm font-bold text-text-primary">{profile.location_name}</p>
                 <p className="text-xs font-medium text-text-secondary">{profile.location_city}</p>
               </div>
-              <iframe
-                src={profile.maps_embed_url ?? ""}
-                className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-700"
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+              {mapsEmbedUrl ? (
+                <iframe
+                  src={mapsEmbedUrl}
+                  title={`Lokasi ${profile.location_name || profile.location_city || "portofolio"}`}
+                  className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-700"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              ) : (
+                <div className="flex h-full w-full flex-col items-center justify-center gap-3 p-8 text-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-text-secondary/10 text-text-secondary">
+                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 21s-7-5.686-7-11a7 7 0 1114 0c0 5.314-7 11-7 11z" />
+                      <circle cx="12" cy="10" r="2.5" strokeWidth="2" />
+                    </svg>
+                  </div>
+                  <p className="text-sm font-semibold text-text-primary">
+                    Peta lokasi belum diatur
+                  </p>
+                  <p className="max-w-xs text-xs font-medium text-text-secondary">
+                    Tambahkan URL Google Maps lewat halaman admin Profil.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Social Links Cards */}

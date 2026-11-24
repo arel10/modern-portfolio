@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import { notFound, permanentRedirect } from "next/navigation"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
+import ProjectGallery from "@/components/ProjectGallery"
 import FadeUp from "@/components/animations/FadeUp"
 import { fetchProjects } from "@/lib/data-fetcher"
 import { findProjectBySlug, projectSlug } from "@/lib/project-slug"
@@ -171,16 +171,11 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
             </FadeUp>
 
             <FadeUp delay={0.08}>
-              <div className="relative mt-10 aspect-[16/10] w-full overflow-hidden rounded-3xl border border-text-secondary/15 bg-thirdary/40 shadow-xl">
-                <Image
-                  src={projectImage(project)}
-                  alt={project.title}
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 860px"
-                  className="object-cover"
-                />
-              </div>
+              <ProjectGallery
+                title={project.title}
+                cover={project.image_path}
+                images={project.images ?? []}
+              />
             </FadeUp>
 
             <FadeUp delay={0.12}>
