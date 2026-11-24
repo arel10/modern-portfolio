@@ -309,18 +309,22 @@ export async function createOrganization(data: {
   role: string
   date_range: string
   description?: string
+  image_url?: string
+  images?: string[]
   skills: string[]
   sort_order: number
 }): Promise<AdminOrganizationRow> {
   await ensureOrganizationsTable()
   const { rows } = await pool.query<AdminOrganizationRow>(
-    `INSERT INTO organizations (name, role, date_range, description, skills, sort_order)
-     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+    `INSERT INTO organizations (name, role, date_range, description, image_url, images, skills, sort_order)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
     [
       data.name,
       data.role,
       data.date_range,
       data.description || '',
+      data.image_url || '',
+      data.images ?? [],
       data.skills,
       data.sort_order,
     ]

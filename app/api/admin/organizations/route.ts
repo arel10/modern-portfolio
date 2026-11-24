@@ -30,6 +30,8 @@ export async function POST(req: NextRequest) {
       role: body.role as string,
       date_range: body.date_range as string,
       description: (body.description as string) || '',
+      image_url: (body.image_url as string) || '',
+      images: parseArr(body.images),
       skills: parseArr(body.skills),
       sort_order: Number(body.sort_order) || 0,
     })

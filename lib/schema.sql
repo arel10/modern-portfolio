@@ -99,6 +99,8 @@ CREATE TABLE IF NOT EXISTS organizations (
   role        VARCHAR(200) NOT NULL,
   date_range  VARCHAR(100) NOT NULL,
   description TEXT         NOT NULL DEFAULT '',
+  image_url   VARCHAR(500) NOT NULL DEFAULT '',   -- foto sampul
+  images      TEXT[]       NOT NULL DEFAULT '{}', -- foto tambahan
   skills      TEXT[]       NOT NULL DEFAULT '{}',
   sort_order  INT          NOT NULL DEFAULT 0,
   is_active   BOOLEAN      NOT NULL DEFAULT TRUE,

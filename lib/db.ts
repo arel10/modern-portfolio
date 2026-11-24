@@ -138,6 +138,8 @@ export interface OrganizationRow {
   role: string
   date_range: string
   description: string
+  image_url: string
+  images: string[]
   skills: string[]
   sort_order: number
 }
@@ -342,12 +344,18 @@ export function ensureOrganizationsTable(): Promise<void> {
           role        VARCHAR(200) NOT NULL,
           date_range  VARCHAR(100) NOT NULL,
           description TEXT         NOT NULL DEFAULT '',
+          image_url   VARCHAR(500) NOT NULL DEFAULT '',
+          images      TEXT[]       NOT NULL DEFAULT '{}',
           skills      TEXT[]       NOT NULL DEFAULT '{}',
           sort_order  INT          NOT NULL DEFAULT 0,
           is_active   BOOLEAN      NOT NULL DEFAULT TRUE,
           created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
           updated_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
-        )
+        );
+        ALTER TABLE organizations
+          ADD COLUMN IF NOT EXISTS image_url VARCHAR(500) NOT NULL DEFAULT '';
+        ALTER TABLE organizations
+          ADD COLUMN IF NOT EXISTS images TEXT[] NOT NULL DEFAULT '{}';
       `)
       .then(() => undefined)
       .catch((error) => {

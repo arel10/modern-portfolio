@@ -38,6 +38,8 @@ export interface Organization {
   role: string
   date_range: string
   description: string
+  image_url: string
+  images: string[]
   skills: string[]
   sort_order: number
   is_active: boolean

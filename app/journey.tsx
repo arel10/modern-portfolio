@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import FadeDown from "@/components/animations/FadeDown"
+import OrganizationPhotos from "@/components/OrganizationPhotos"
 import type { ExperienceRow, EducationRow, OrganizationRow } from "@/lib/db"
 
 interface JourneyProps {
@@ -335,12 +336,17 @@ export default function Journey({
                     transition={{ duration: 0.5, delay: index * 0.08 }}
                     className="group flex flex-col rounded-2xl border border-text-secondary/15 bg-thirdary/30 p-5 sm:p-6 backdrop-blur-sm transition-all duration-300 hover:border-text-primary/40 hover:bg-thirdary/60 hover:shadow-xl hover:-translate-y-1"
                   >
+                    <div className="mb-4">
+                      <OrganizationPhotos
+                        name={org.name}
+                        cover={org.image_url}
+                        images={org.images ?? []}
+                      />
+                    </div>
+
                     <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                       <span className="inline-flex items-center rounded-full border border-text-secondary/15 bg-background/80 px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-text-secondary">
                         {org.date_range}
-                      </span>
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-background/70 text-text-secondary transition-colors group-hover:text-text-primary">
-                        <IconBuilding />
                       </span>
                     </div>
 
@@ -381,27 +387,5 @@ export default function Journey({
         )}
       </div>
     </section>
-  )
-}
-
-function IconBuilding() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.8}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4"
-      aria-hidden="true"
-    >
-      <path d="M3 21h18" />
-      <path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16" />
-      <path d="M15 9h2a2 2 0 0 1 2 2v10" />
-      <path d="M9 7h2" />
-      <path d="M9 11h2" />
-      <path d="M9 15h2" />
-    </svg>
   )
 }

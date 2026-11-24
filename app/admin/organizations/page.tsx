@@ -9,6 +9,7 @@ import {
   useAdminData,
 } from '@/components/admin/api'
 import { Icon } from '@/components/admin/icons'
+import { ProjectGalleryInput } from '@/components/admin/ProjectGalleryInput'
 import { useToast } from '@/components/admin/ToastContext'
 import {
   Alert,
@@ -34,6 +35,8 @@ interface OrganizationFormState {
   role: string
   date_range: string
   description: string
+  image_url: string
+  images: string[]
   skills: string
   sort_order: string
   is_active: boolean
@@ -45,6 +48,8 @@ function toForm(item?: Organization): OrganizationFormState {
     role: item?.role ?? '',
     date_range: item?.date_range ?? '',
     description: item?.description ?? '',
+    image_url: item?.image_url ?? '',
+    images: Array.isArray(item?.images) ? item.images : [],
     skills: listToText(item?.skills),
     sort_order: String(item?.sort_order ?? 0),
     is_active: item?.is_active ?? true,
@@ -84,6 +89,8 @@ function OrganizationModal({
         role: form.role.trim(),
         date_range: form.date_range.trim(),
         description: form.description.trim(),
+        image_url: form.image_url.trim(),
+        images: form.images.filter(Boolean),
         skills: parseList(form.skills),
         sort_order: Number(form.sort_order) || 0,
         ...(isEdit ? { is_active: form.is_active } : {}),
@@ -181,6 +188,17 @@ function OrganizationModal({
             placeholder="Memimpin organisasi dengan 40+ anggota, menyusun program kerja tahunan..."
           />
         </Field>
+
+        <ProjectGalleryInput
+          cover={form.image_url}
+          images={form.images}
+          label="Foto Organisasi"
+          hint="Unggah foto kegiatan, logo, atau dokumentasi organisasi. Bisa pilih banyak sekaligus — otomatis dikompres. Foto pertama menjadi sampul."
+          maxPhotos={20}
+          onChange={({ cover, images }) =>
+            setForm((prev) => ({ ...prev, image_url: cover, images }))
+          }
+        />
 
         <Field
           label="Skills / fokus"
@@ -341,6 +359,22 @@ export default function OrganizationsPage() {
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
+                  {item.image_url && (
+                    <div className="relative mb-3 h-24 w-40 overflow-hidden rounded-xl border border-text-secondary/15 bg-background dark:border-white/10">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                      {(item.images?.length ?? 0) > 0 && (
+                        <span className="absolute bottom-1 right-1 rounded-full bg-background/90 px-1.5 py-0.5 text-[9px] font-bold text-text-primary backdrop-blur">
+                          {(item.images?.length ?? 0) + 1} foto
+                        </span>
+                      )}
+                    </div>
+                  )}
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-base font-bold text-text-primary">
                       {item.role}

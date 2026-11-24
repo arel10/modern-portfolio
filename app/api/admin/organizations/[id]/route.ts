@@ -19,6 +19,7 @@ export async function PUT(
     const { id } = await params
     const body = (await req.json()) as Record<string, unknown>
     if (body.skills !== undefined) body.skills = parseArr(body.skills)
+    if (body.images !== undefined) body.images = parseArr(body.images)
     const result = await updateOrganization(Number(id), body)
     revalidatePublicPages()
     return NextResponse.json(result)
