@@ -9,11 +9,12 @@ export default function PageLoader() {
     // Prevent scrolling while loading
     document.body.style.overflow = "hidden"
 
-    // Simulating initial load time for smooth entrance
+    // Loader hanya sebagai transisi singkat. Konten sudah dirender server,
+    // jadi tidak perlu menahan pengunjung selama 2 detik.
     const timer = setTimeout(() => {
       setIsLoading(false)
       document.body.style.overflow = "unset"
-    }, 2000) // Adjust the loading time as necessary (2 seconds for demo)
+    }, 350)
 
     return () => {
       clearTimeout(timer)
@@ -27,8 +28,8 @@ export default function PageLoader() {
         <motion.div
           key="loader"
           initial={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -100, filter: "blur(20px)" }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
+          exit={{ opacity: 0, y: -40, filter: "blur(12px)" }}
+          transition={{ duration: 0.35, ease: "easeInOut" }}
           className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center overflow-hidden"
         >
           {/* Aesthetic Background Elements */}

@@ -53,6 +53,13 @@ export async function adminFetch<T>(
     throw new ApiError(message, res.status)
   }
 
+  // Setiap perubahan data dari admin langsung menghapus cache halaman publik,
+  // sehingga pengunjung tidak perlu menunggu revalidate 60 detik.
+  const method = (init.method ?? 'GET').toUpperCase()
+  if (method !== 'GET' && method !== 'HEAD') {
+    fetch('/api/admin/revalidate', { method: 'POST', keepalive: true }).catch(() => {})
+  }
+
   return data as T
 }
 

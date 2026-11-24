@@ -20,9 +20,10 @@ import {
   fetchTechStack,
 } from "@/lib/data-fetcher"
 
-// Pastikan halaman publik selalu merender data terkini dari PostgreSQL
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+// Halaman publik di-cache di CDN dan diperbarui otomatis tiap 60 detik.
+// Saat data diubah dari admin, cache juga langsung di-purge lewat
+// /api/admin/revalidate supaya perubahan tetap instan.
+export const revalidate = 60
 
 export default async function Home() {
   const [
