@@ -87,7 +87,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     name: project.title,
     description: project.short_description,
     image: new URL(projectImage(project), baseUrl).toString(),
-    url: new URL(canonicalSlug, baseUrl).toString(),
+    url: new URL(`/projects/${canonicalSlug}`, baseUrl).toString(),
     dateCreated: project.created_at_label || undefined,
     keywords: project.tech.join(", "),
     creator: {
