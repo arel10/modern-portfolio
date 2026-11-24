@@ -16,6 +16,8 @@ import {
   getTechCategoriesWithItems,
 } from './db'
 
+import { cache } from 'react'
+
 import {
   FALLBACK_PROFILE,
   FALLBACK_ROLES,
@@ -100,5 +102,7 @@ export const fetchExperiences = (): Promise<ExperienceRow[]>=> safe(getExperienc
 export const fetchEducations = (): Promise<EducationRow[]>  => safe(getEducations, FALLBACK_EDUCATIONS)
 export const fetchAchievements = (): Promise<AchievementRow[]> => safe(getAchievements, FALLBACK_ACHIEVEMENTS)
 export const fetchCertificates = (): Promise<CertificateRow[]> => safe(getCertificates, FALLBACK_CERTIFICATES)
-export const fetchProjects  = (): Promise<ProjectRow[]>     => safe(getProjects, FALLBACK_PROJECTS)
+export const fetchProjects  = cache(
+  (): Promise<ProjectRow[]> => safe(getProjects, FALLBACK_PROJECTS)
+)
 export const fetchTechStack = (): Promise<WithTech[]>       => safe(getTechCategoriesWithItems, FALLBACK_TECH)

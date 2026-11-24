@@ -13,5 +13,9 @@ export async function POST(req: NextRequest) {
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   revalidatePath('/')
+  // Semua halaman detail project ikut dibersihkan agar perubahan judul,
+  // gambar, atau fitur langsung tampil tanpa menunggu 60 detik.
+  revalidatePath('/projects/[slug]', 'page')
+  revalidatePath('/sitemap.xml')
   return NextResponse.json({ revalidated: true, now: Date.now() })
 }

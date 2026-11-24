@@ -1,10 +1,11 @@
 "use client"
 import Image from "next/image"
+import Link from "next/link"
 import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import FadeDown from "@/components/animations/FadeDown"
 import FadeUp from "@/components/animations/FadeUp"
 import GlareHover from "@/components/GlareHover"
+import { projectSlug } from "@/lib/project-slug"
 import type { ProjectRow, SocialRow } from "@/lib/db"
 
 interface ProjectProps {
@@ -15,24 +16,12 @@ interface ProjectProps {
 type ViewMode = "carousel" | "grid"
 
 export default function Project({ projects, socials }: ProjectProps) {
-  const [isOpen, setIsOpen] = useState<number | null>(null)
   const [viewMode, setViewMode] = useState<ViewMode>("carousel")
   const sliderRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
 
   const githubUrl = socials.find((s) => s.platform === "github")?.url ?? "#"
-
-  useEffect(() => {
-    if (isOpen !== null) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "unset"
-    }
-    return () => {
-      document.body.style.overflow = "unset"
-    }
-  }, [isOpen])
 
   const checkScroll = () => {
     if (sliderRef.current) {
@@ -62,8 +51,6 @@ export default function Project({ projects, socials }: ProjectProps) {
       sliderRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" })
     }
   }
-
-  const activeProject = isOpen !== null ? projects[isOpen] ?? null : null
 
   return (
     <>
@@ -202,14 +189,13 @@ export default function Project({ projects, socials }: ProjectProps) {
                       </p>
 
                       <div className="flex items-center justify-between mt-auto pt-4 border-t border-text-secondary/10">
-                        <button
-                          type="button"
+                        <Link
+                          href={`/projects/${projectSlug(project)}`}
                           className="text-xs font-bold tracking-[0.2em] uppercase text-text-primary flex items-center gap-2 group/btn cursor-pointer"
-                          onClick={() => setIsOpen(index)}
                         >
                           View Details
                           <span className="w-6 h-[2px] bg-text-primary group-hover/btn:w-10 transition-all duration-300"></span>
-                        </button>
+                        </Link>
                         <a
                           href={project.live_demo_url}
                           target="_blank"
@@ -279,14 +265,13 @@ export default function Project({ projects, socials }: ProjectProps) {
                     </p>
 
                     <div className="flex items-center justify-between mt-auto pt-4 border-t border-text-secondary/10">
-                      <button
-                        type="button"
+                      <Link
+                        href={`/projects/${projectSlug(project)}`}
                         className="text-xs font-bold tracking-[0.2em] uppercase text-text-primary flex items-center gap-2 group/btn cursor-pointer"
-                        onClick={() => setIsOpen(index)}
                       >
                         View Details
                         <span className="w-6 h-[2px] bg-text-primary group-hover/btn:w-10 transition-all duration-300"></span>
-                      </button>
+                      </Link>
                       <a
                         href={project.live_demo_url}
                         target="_blank"
@@ -322,105 +307,6 @@ export default function Project({ projects, socials }: ProjectProps) {
           </div>
         </FadeUp>
 
-        {/* Project Detail Modal */}
-        <AnimatePresence>
-          {isOpen !== null && activeProject && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 bg-background/90 backdrop-blur-md"
-                onClick={() => setIsOpen(null)}
-              />
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="bg-background border border-text-secondary/20 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl relative z-10"
-              >
-                <div className="flex justify-between items-center p-6 border-b border-text-secondary/10">
-                  <h4 className="text-2xl font-black text-text-primary tracking-tight">{activeProject.title}</h4>
-                  <button
-                    className="text-text-secondary hover:text-text-primary transition-colors p-2 bg-text-secondary/5 rounded-full"
-                    onClick={() => setIsOpen(null)}
-                  >
-                    <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                  </button>
-                </div>
-
-                <div className="p-6 md:p-8 overflow-y-auto flex-grow custom-scrollbar space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-6 border-b border-text-secondary/10">
-                    <div>
-                      <span className="text-xs font-bold tracking-widest text-text-secondary uppercase block mb-2">Created</span>
-                      <span className="text-sm font-bold bg-thirdary text-text-primary px-3 py-1.5 rounded-lg border border-text-secondary/10">
-                        {activeProject.created_at_label ?? "—"}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-xs font-bold tracking-widest text-text-secondary uppercase block mb-2">Technologies</span>
-                      <div className="flex flex-wrap gap-1.5">
-                        {activeProject.tech.map((tech, i) => (
-                          <span key={i} className="text-xs font-bold bg-thirdary text-text-primary px-2.5 py-1 rounded-md border border-text-secondary/10 uppercase tracking-wider">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <span className="text-xs font-bold tracking-widest text-text-secondary uppercase block mb-3">Key Features</span>
-                    <ul className="space-y-3">
-                      {activeProject.features.map((feature, i) => (
-                        <li key={i} className="flex items-center bg-thirdary/50 p-3.5 rounded-xl border border-text-secondary/5">
-                          <span className="text-text-primary mr-3 font-black">&rarr;</span>
-                          <span className="text-sm font-bold text-text-primary tracking-wide">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="p-6 border-t border-text-secondary/10 flex flex-col sm:flex-row gap-4 bg-background">
-                  <a
-                    href={activeProject.live_demo_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 text-center font-bold text-sm tracking-widest uppercase bg-text-primary text-background py-3.5 rounded-xl hover:-translate-y-1 transition-transform duration-300"
-                  >
-                    Live Demo
-                  </a>
-                  {activeProject.is_private_repo ? (
-                    <button
-                      disabled
-                      className="flex-1 flex justify-center items-center gap-2 text-center font-bold text-sm tracking-widest uppercase border-2 border-text-secondary/20 text-text-secondary opacity-50 cursor-not-allowed py-3.5 rounded-xl"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
-                      Private Repo
-                    </button>
-                  ) : (
-                    <a
-                      href={activeProject.github_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex justify-center items-center gap-2 text-center font-bold text-sm tracking-widest uppercase border-2 border-text-secondary/20 text-text-primary hover:border-text-primary hover:-translate-y-1 transition-all duration-300 py-3.5 rounded-xl"
-                    >
-                      Source Code
-                    </a>
-                  )}
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
       </section>
     </>
   )

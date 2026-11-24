@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link"
 import { useState, useEffect } from "react"
 import FadeDown from "./animations/FadeDown"
 
@@ -15,7 +16,11 @@ export default function Header() {
         behavior: "smooth",
         block: "start",
       })
+      return
     }
+    // Di halaman lain (mis. detail project) section tidak ada,
+    // jadi kembali ke beranda lalu lompat ke section tersebut.
+    window.location.href = `/#${id}`
   }
 
   useEffect(() => {
@@ -72,7 +77,12 @@ export default function Header() {
           <div className="relative flex items-center justify-between py-3 md:py-4 px-6 md:px-8 bg-background/60 backdrop-blur-2xl backdrop-saturate-150 border border-text-secondary/15 dark:border-white/10 rounded-full shadow-[inset_0_1px_0_0_rgba(255,255,255,0.55),0_8px_32px_-12px_rgba(0,0,0,0.25)] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_8px_32px_-12px_rgba(0,0,0,0.8)] transition-colors duration-300">
             <div className="flex flex-row items-center">
               {/* Typographic Logo */}
-              <span className="text-xl md:text-2xl font-black text-text-primary tracking-tighter">PORTFOLIO.</span>
+              <Link
+                href="/"
+                className="text-xl md:text-2xl font-black text-text-primary tracking-tighter"
+              >
+                PORTFOLIO.
+              </Link>
             </div>
 
             <nav className="flex-row md:gap-8 lg:gap-10 hidden lg:flex items-center">
