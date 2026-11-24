@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import "../styles/globals.css"
 import PageLoader from "@/components/PageLoader"
+import AnalyticsTracker from "@/components/AnalyticsTracker"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -60,6 +61,7 @@ export default function RootLayout({
     <html lang="id">
       <body className={`${poppins.className} antialiased`}>
         <PageLoader />
+        <AnalyticsTracker />
         {children}
       </body>
     </html>

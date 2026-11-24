@@ -61,6 +61,7 @@ async function resetAndSeed() {
     console.log('🗑️  Menghapus tabel-tabel lama (Reset Database)...')
     await client.query(`
       DROP TABLE IF EXISTS
+        page_views,
         admin_users,
         contact_messages,
         chat_messages,

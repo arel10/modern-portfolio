@@ -229,6 +229,34 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 );
 
 -- ============================================================
+-- TABLE: page_views
+-- Analytics pengunjung website (anonim)
+-- Dibuat otomatis juga oleh lib/analytics.ts saat request pertama,
+-- jadi database production tidak perlu dimigrasi manual.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS page_views (
+  id          BIGSERIAL PRIMARY KEY,
+  visitor_id  VARCHAR(64)  NOT NULL,
+  path        VARCHAR(500) NOT NULL,
+  referrer    VARCHAR(500),
+  source      VARCHAR(80)  NOT NULL DEFAULT 'Direct',
+  user_agent  TEXT,
+  ip_hash     VARCHAR(64),
+  country     VARCHAR(10),
+  region      VARCHAR(120),
+  city        VARCHAR(120),
+  device      VARCHAR(20)  NOT NULL DEFAULT 'Desktop',
+  browser     VARCHAR(50)  NOT NULL DEFAULT 'Unknown',
+  os          VARCHAR(50)  NOT NULL DEFAULT 'Unknown',
+  created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_page_views_created_at
+  ON page_views (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_page_views_visitor
+  ON page_views (visitor_id, created_at DESC);
+
+-- ============================================================
 -- TABLE: admin_users
 -- User untuk web admin (bcrypt password)
 -- ============================================================

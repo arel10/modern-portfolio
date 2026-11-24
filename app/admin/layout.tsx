@@ -9,6 +9,7 @@ import { ToastProvider } from '@/components/admin/ToastContext'
 
 const navItems: { href: string; label: string; icon: IconName }[] = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: 'dashboard' },
+  { href: '/admin/analytics', label: 'Pengunjung', icon: 'chart' },
   { href: '/admin/profile', label: 'Profil Saya', icon: 'user' },
   { href: '/admin/projects', label: 'Karya / Proyek', icon: 'rocket' },
   { href: '/admin/experiences', label: 'Pengalaman', icon: 'briefcase' },
