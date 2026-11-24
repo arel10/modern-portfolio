@@ -207,7 +207,7 @@ export const FALLBACK_PROJECTS: ProjectRow[] = [
     title: 'Attendance Management System',
     short_description:
       'Sistem manajemen kehadiran terintegrasi untuk program magang PT Trans Retail Indonesia dengan monitoring real-time.',
-    image_path: '/images/restapi.jpeg',
+    image_path: '',
     created_at_label: '2025-10-01',
     tech: ['React.js', 'Node.js', 'Express.js', 'PostgreSQL'],
     features: ['Real-time Attendance', 'Admin Dashboard', 'Intern Management', 'Report & Analytics'],
@@ -221,7 +221,7 @@ export const FALLBACK_PROJECTS: ProjectRow[] = [
     title: 'Internal Project Management System',
     short_description:
       'Sistem manajemen proyek internal untuk tim IT Development Bank Nagari (PT BPD Sumbar).',
-    image_path: '/images/cloudpanel.jpeg',
+    image_path: '',
     created_at_label: '2025-08-01',
     tech: ['React.js', 'Node.js', 'PostgreSQL'],
     features: ['Project Planning', 'Task Management', 'Team Collaboration', 'Progress Monitoring'],

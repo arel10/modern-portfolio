@@ -423,7 +423,7 @@ INSERT INTO projects (title, short_description, image_path, created_at_label, te
 (
   'Attendance Management System',
   'Sistem manajemen kehadiran terintegrasi untuk program magang PT Trans Retail Indonesia, dengan fitur monitoring dan laporan absensi real-time.',
-  '/images/restapi.jpeg',
+  '',
   '2025-10-01',
   ARRAY['React.js', 'Node.js', 'Express.js', 'PostgreSQL', 'REST API'],
   ARRAY['Real-time Attendance Tracking', 'Admin Dashboard', 'Intern Management', 'Report & Analytics'],
@@ -435,7 +435,7 @@ INSERT INTO projects (title, short_description, image_path, created_at_label, te
 (
   'Internal Project Management System',
   'Sistem manajemen proyek internal untuk tim IT Development Bank Nagari, mendukung perencanaan, tracking, dan kolaborasi proyek sesuai proses bisnis internal.',
-  '/images/cloudpanel.jpeg',
+  '',
   '2025-08-01',
   ARRAY['React.js', 'Node.js', 'PostgreSQL', 'REST API', 'Project Management'],
   ARRAY['Project Planning & Tracking', 'Task Management', 'Team Collaboration', 'Progress Monitoring'],
