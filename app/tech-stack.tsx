@@ -44,8 +44,8 @@ export default function TechStack({ techStack }: TechStackProps) {
                   <h4 className="text-xl font-black text-text-primary tracking-tight">
                     {category.title}
                   </h4>
-                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-background border border-text-secondary/15 text-text-secondary">
-                    {category.technologies.length} Tools
+                  <span className="shrink-0 whitespace-nowrap text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-background border border-text-secondary/15 text-text-secondary">
+                    {category.technologies.length} {category.technologies.length === 1 ? 'Tool' : 'Tools'}
                   </span>
                 </div>
                 {category.description && (
@@ -56,7 +56,7 @@ export default function TechStack({ techStack }: TechStackProps) {
               </div>
 
               {/* Technologies Badges Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-auto">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 content-start">
                 {category.technologies.map((tech, techIdx) => (
                   <div
                     key={tech.id || techIdx}
