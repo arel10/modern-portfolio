@@ -32,6 +32,18 @@ export interface Experience {
   updated_at?: string
 }
 
+export interface Organization {
+  id: number
+  name: string
+  role: string
+  date_range: string
+  description: string
+  skills: string[]
+  sort_order: number
+  is_active: boolean
+  updated_at?: string
+}
+
 export interface Education {
   id: number
   institution: string
@@ -146,6 +158,7 @@ export interface QuickStat {
 
 export interface DashboardStats {
   experiences: number
+  organizations: number
   educations: number
   achievements: number
   certificates: number
@@ -155,4 +168,60 @@ export interface DashboardStats {
   techCategories: number
   techItems: number
   quickStats: number
+  active: {
+    experiences: number
+    organizations: number
+    educations: number
+    achievements: number
+    certificates: number
+    projects: number
+    roles: number
+    socials: number
+    techCategories: number
+    techItems: number
+    quickStats: number
+  }
+}
+
+export interface DashboardAnalyticsSummary {
+  viewsAll: number
+  visitorsAll: number
+  viewsToday: number
+  visitorsToday: number
+  views7d: number
+  visitors7d: number
+  views30d: number
+  visitors30d: number
+}
+
+export interface DashboardDailyPoint {
+  date: string
+  views: number
+  visitors: number
+}
+
+export interface DashboardRecentVisitor {
+  id: string
+  lastSeen: string
+  country: string | null
+  city: string | null
+  device: string
+  browser: string
+  source: string
+}
+
+export interface DashboardProfile {
+  full_name: string
+  short_name: string
+  avatar_url: string
+  email: string | null
+}
+
+export interface DashboardData {
+  stats: DashboardStats
+  analytics: DashboardAnalyticsSummary | null
+  daily: DashboardDailyPoint[]
+  topPages: { label: string; views: number; visitors: number }[]
+  recentVisitors: DashboardRecentVisitor[]
+  profile: DashboardProfile | null
 }

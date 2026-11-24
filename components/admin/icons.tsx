@@ -32,6 +32,7 @@ export type IconName =
   | 'upload'
   | 'file'
   | 'academic'
+  | 'organization'
   | 'trophy'
   | 'certificate'
 
@@ -61,6 +62,16 @@ const paths: Record<IconName, ReactNode> = {
     <>
       <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
       <path d="M6 12v5c3 3 9 3 12 0v-5" />
+    </>
+  ),
+  organization: (
+    <>
+      <path d="M3 21h18" />
+      <path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16" />
+      <path d="M15 9h2a2 2 0 0 1 2 2v10" />
+      <path d="M9 7h2" />
+      <path d="M9 11h2" />
+      <path d="M9 15h2" />
     </>
   ),
   trophy: (

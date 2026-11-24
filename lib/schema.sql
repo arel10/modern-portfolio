@@ -90,6 +90,23 @@ CREATE TABLE IF NOT EXISTS experiences (
 );
 
 -- ============================================================
+-- TABLE: organizations
+-- Pengalaman organisasi, komunitas, dan kepanitiaan
+-- ============================================================
+CREATE TABLE IF NOT EXISTS organizations (
+  id          SERIAL PRIMARY KEY,
+  name        VARCHAR(200) NOT NULL,
+  role        VARCHAR(200) NOT NULL,
+  date_range  VARCHAR(100) NOT NULL,
+  description TEXT         NOT NULL DEFAULT '',
+  skills      TEXT[]       NOT NULL DEFAULT '{}',
+  sort_order  INT          NOT NULL DEFAULT 0,
+  is_active   BOOLEAN      NOT NULL DEFAULT TRUE,
+  created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+-- ============================================================
 -- TABLE: educations
 -- Riwayat pendidikan & almamater
 -- ============================================================
@@ -287,6 +304,9 @@ CREATE OR REPLACE TRIGGER trg_profile_updated_at
 
 CREATE OR REPLACE TRIGGER trg_experiences_updated_at
   BEFORE UPDATE ON experiences FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+CREATE OR REPLACE TRIGGER trg_organizations_updated_at
+  BEFORE UPDATE ON organizations FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE OR REPLACE TRIGGER trg_projects_updated_at
   BEFORE UPDATE ON projects FOR EACH ROW EXECUTE FUNCTION set_updated_at();

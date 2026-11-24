@@ -7,19 +7,53 @@ import { Icon, type IconName } from '@/components/admin/icons'
 import { cn } from '@/components/admin/ui'
 import { ToastProvider } from '@/components/admin/ToastContext'
 
-const navItems: { href: string; label: string; icon: IconName }[] = [
-  { href: '/admin/dashboard', label: 'Dashboard', icon: 'dashboard' },
-  { href: '/admin/analytics', label: 'Pengunjung', icon: 'chart' },
-  { href: '/admin/profile', label: 'Profil Saya', icon: 'user' },
-  { href: '/admin/projects', label: 'Karya / Proyek', icon: 'rocket' },
-  { href: '/admin/experiences', label: 'Pengalaman', icon: 'briefcase' },
-  { href: '/admin/educations', label: 'Pendidikan', icon: 'academic' },
-  { href: '/admin/achievements', label: 'Pencapaian & Jurnal', icon: 'trophy' },
-  { href: '/admin/certificates', label: 'Sertifikat', icon: 'certificate' },
-  { href: '/admin/tech-stack', label: 'Tech Stack', icon: 'stack' },
-  { href: '/admin/socials', label: 'Sosial Media', icon: 'globe' },
-  { href: '/admin/roles', label: 'Roles & Stats', icon: 'tag' },
+interface NavItem {
+  href: string
+  label: string
+  icon: IconName
+}
+
+const navGroups: { title: string; items: NavItem[] }[] = [
+  {
+    title: 'Ringkasan',
+    items: [
+      { href: '/admin/dashboard', label: 'Dashboard', icon: 'dashboard' },
+      { href: '/admin/analytics', label: 'Pengunjung', icon: 'chart' },
+    ],
+  },
+  {
+    title: 'Profil',
+    items: [
+      { href: '/admin/profile', label: 'Profil Saya', icon: 'user' },
+      { href: '/admin/socials', label: 'Sosial Media', icon: 'globe' },
+    ],
+  },
+  {
+    title: 'Portofolio',
+    items: [
+      { href: '/admin/projects', label: 'Karya / Proyek', icon: 'rocket' },
+      { href: '/admin/experiences', label: 'Pengalaman', icon: 'briefcase' },
+      { href: '/admin/organizations', label: 'Organisasi', icon: 'organization' },
+      { href: '/admin/educations', label: 'Pendidikan', icon: 'academic' },
+    ],
+  },
+  {
+    title: 'Pencapaian',
+    items: [
+      { href: '/admin/achievements', label: 'Pencapaian & Jurnal', icon: 'trophy' },
+      { href: '/admin/certificates', label: 'Sertifikat', icon: 'certificate' },
+    ],
+  },
+  {
+    title: 'Teknologi',
+    items: [
+      { href: '/admin/tech-stack', label: 'Tech Stack', icon: 'stack' },
+      { href: '/admin/roles', label: 'Roles & Stats', icon: 'tag' },
+    ],
+  },
 ]
+
+const navItems = navGroups.flatMap((group) => group.items)
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -102,39 +136,48 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex-1 space-y-1.5 overflow-y-auto px-4 py-5">
-            <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-text-secondary">
-              Navigasi Admin
-            </p>
-            {navItems.map((item) => {
-              const isActive =
-                pathname === item.href || pathname.startsWith(item.href + '/')
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    'group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200',
-                    isActive
-                      ? 'bg-text-secondary/15 text-text-primary font-bold shadow-sm border border-text-secondary/20 dark:border-white/10'
-                      : 'text-text-secondary hover:bg-text-secondary/10 hover:text-text-primary'
-                  )}
-                >
-                  <Icon
-                    name={item.icon}
-                    className={cn(
-                      'h-4.5 w-4.5 shrink-0 transition-transform duration-200 group-hover:scale-110',
-                      isActive ? 'text-text-primary' : 'text-text-secondary group-hover:text-text-primary'
-                    )}
-                  />
-                  <span>{item.label}</span>
-                  {isActive && (
-                    <span className="ml-auto h-1.5 w-1.5 rounded-full bg-text-primary shadow-[0_0_8px_currentColor]" />
-                  )}
-                </Link>
-              )
-            })}
+          <nav className="flex-1 overflow-y-auto px-3 py-4">
+            {navGroups.map((group, groupIndex) => (
+              <div
+                key={group.title}
+                className={cn('space-y-1', groupIndex > 0 && 'mt-6')}
+              >
+                <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-text-secondary/80">
+                  {group.title}
+                </p>
+                {group.items.map((item) => {
+                  const isActive =
+                    pathname === item.href || pathname.startsWith(item.href + '/')
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={cn(
+                        'group relative flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200',
+                        isActive
+                          ? 'bg-text-secondary/15 text-text-primary font-bold shadow-sm border border-text-secondary/20 dark:border-white/10'
+                          : 'text-text-secondary hover:bg-text-secondary/10 hover:text-text-primary'
+                      )}
+                    >
+                      <Icon
+                        name={item.icon}
+                        className={cn(
+                          'h-4.5 w-4.5 shrink-0 transition-transform duration-200 group-hover:scale-110',
+                          isActive
+                            ? 'text-text-primary'
+                            : 'text-text-secondary group-hover:text-text-primary'
+                        )}
+                      />
+                      <span className="truncate">{item.label}</span>
+                      {isActive && (
+                        <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-text-primary shadow-[0_0_8px_currentColor]" />
+                      )}
+                    </Link>
+                  )
+                })}
+              </div>
+            ))}
           </nav>
 
           {/* Footer Actions */}

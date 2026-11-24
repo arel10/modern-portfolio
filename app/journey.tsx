@@ -4,20 +4,30 @@ import React, { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import FadeDown from "@/components/animations/FadeDown"
-import type { ExperienceRow, EducationRow } from "@/lib/db"
+import type { ExperienceRow, EducationRow, OrganizationRow } from "@/lib/db"
 
 interface JourneyProps {
   experiences: ExperienceRow[]
+  organizations: OrganizationRow[]
   educations: EducationRow[]
 }
 
-type TabType = "all" | "experience" | "education"
+type TabType = "all" | "experience" | "organization" | "education"
 
-export default function Journey({ experiences, educations }: JourneyProps) {
+export default function Journey({
+  experiences,
+  organizations,
+  educations,
+}: JourneyProps) {
   const [activeTab, setActiveTab] = useState<TabType>("all")
 
+  const hasOrganizations = organizations.length > 0
   const showExperience = activeTab === "all" || activeTab === "experience"
   const showEducation = activeTab === "all" || activeTab === "education"
+  const showOrganization =
+    hasOrganizations &&
+    (activeTab === "all" || activeTab === "organization")
+  const showJourneyColumns = activeTab !== "organization"
 
   return (
     <section
@@ -41,7 +51,7 @@ export default function Journey({ experiences, educations }: JourneyProps) {
             </div>
 
             {/* View Mode Switcher */}
-            <div className="flex items-center gap-1.5 p-1.5 rounded-2xl border border-text-secondary/15 bg-thirdary/40 backdrop-blur-md self-start md:self-auto">
+            <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl border border-text-secondary/15 bg-thirdary/40 backdrop-blur-md self-start md:self-auto">
               <button
                 type="button"
                 onClick={() => setActiveTab("all")}
@@ -67,6 +77,20 @@ export default function Journey({ experiences, educations }: JourneyProps) {
                 Pengalaman ({experiences.length})
               </button>
 
+              {hasOrganizations && (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("organization")}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-300 ${
+                    activeTab === "organization"
+                      ? "bg-text-primary text-background shadow-md scale-[1.02]"
+                      : "text-text-secondary hover:text-text-primary hover:bg-text-secondary/10"
+                  }`}
+                >
+                  Organisasi ({organizations.length})
+                </button>
+              )}
+
               <button
                 type="button"
                 onClick={() => setActiveTab("education")}
@@ -85,6 +109,7 @@ export default function Journey({ experiences, educations }: JourneyProps) {
 
       {/* Main Content Grid (Side-by-Side on Desktop) */}
       <div className="px-6 sm:px-10 lg:px-16 w-full">
+        {showJourneyColumns && (
         <div
           className={`grid gap-8 lg:gap-10 xl:gap-12 transition-all duration-500 ${
             activeTab === "all" ? "grid-cols-1 lg:grid-cols-2 items-start" : "grid-cols-1 max-w-5xl mx-auto"
@@ -272,7 +297,111 @@ export default function Journey({ experiences, educations }: JourneyProps) {
             </div>
           )}
         </div>
+        )}
+
+        {/* ===================== Organizations ===================== */}
+        {showOrganization && (
+          <div
+            className={
+              activeTab === "all" ? "mt-12 lg:mt-16" : "max-w-5xl mx-auto"
+            }
+          >
+            <div className="flex items-center justify-between pb-4 border-b border-text-secondary/15">
+              <div>
+                <h4 className="text-xl font-black text-text-primary tracking-tight">
+                  Organizations &amp; Community
+                </h4>
+                <p className="text-xs font-medium text-text-secondary">
+                  Pengalaman Organisasi, Komunitas &amp; Kepanitiaan
+                </p>
+              </div>
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-text-secondary/10 text-text-secondary">
+                {organizations.length} Organisasi
+              </span>
+            </div>
+
+            {organizations.length === 0 ? (
+              <div className="mt-6 rounded-2xl border border-text-secondary/15 bg-thirdary/20 p-8 text-center text-sm text-text-secondary">
+                Belum ada pengalaman organisasi yang ditambahkan.
+              </div>
+            ) : (
+              <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                {organizations.map((org, index) => (
+                  <motion.div
+                    key={org.id}
+                    initial={{ opacity: 0, y: 25 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.5, delay: index * 0.08 }}
+                    className="group flex flex-col rounded-2xl border border-text-secondary/15 bg-thirdary/30 p-5 sm:p-6 backdrop-blur-sm transition-all duration-300 hover:border-text-primary/40 hover:bg-thirdary/60 hover:shadow-xl hover:-translate-y-1"
+                  >
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                      <span className="inline-flex items-center rounded-full border border-text-secondary/15 bg-background/80 px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-text-secondary">
+                        {org.date_range}
+                      </span>
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-background/70 text-text-secondary transition-colors group-hover:text-text-primary">
+                        <IconBuilding />
+                      </span>
+                    </div>
+
+                    <h5 className="text-lg sm:text-xl font-black text-text-primary tracking-tight leading-snug">
+                      {org.role}
+                    </h5>
+
+                    <div className="mt-1 flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-text-primary/60" />
+                      <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-text-primary">
+                        {org.name}
+                      </span>
+                    </div>
+
+                    {org.description && (
+                      <p className="mt-3 line-clamp-5 text-xs sm:text-sm text-text-secondary leading-relaxed font-medium">
+                        {org.description}
+                      </p>
+                    )}
+
+                    {org.skills && org.skills.length > 0 && (
+                      <div className="mt-auto flex flex-wrap gap-1.5 pt-4">
+                        {org.skills.map((skill, i) => (
+                          <span
+                            key={i}
+                            className="text-[10px] font-semibold bg-background/80 text-text-primary px-2 py-0.5 rounded-md border border-text-secondary/15 uppercase tracking-wide"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
+  )
+}
+
+function IconBuilding() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-4 w-4"
+      aria-hidden="true"
+    >
+      <path d="M3 21h18" />
+      <path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16" />
+      <path d="M15 9h2a2 2 0 0 1 2 2v10" />
+      <path d="M9 7h2" />
+      <path d="M9 11h2" />
+      <path d="M9 15h2" />
+    </svg>
   )
 }

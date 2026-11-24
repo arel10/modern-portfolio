@@ -9,6 +9,7 @@ import type {
   QuickStatRow,
   SocialRow,
   ExperienceRow,
+  OrganizationRow,
   EducationRow,
   AchievementRow,
   CertificateRow,
@@ -100,6 +101,10 @@ export const FALLBACK_EXPERIENCES: ExperienceRow[] = [
     sort_order: 4,
   },
 ]
+
+// Data organisasi dikelola sepenuhnya dari admin. Fallback kosong agar
+// halaman publik tetap tampil rapi saat database belum berisi data.
+export const FALLBACK_ORGANIZATIONS: OrganizationRow[] = []
 
 export const FALLBACK_EDUCATIONS: EducationRow[] = [
   {

@@ -1,4 +1,4 @@
-import { pool, ensureProjectImagesColumn } from './db'
+import { pool, ensureOrganizationsTable, ensureProjectImagesColumn } from './db'
 import type {
   ProfileRow,
   ExperienceRow,
@@ -6,6 +6,7 @@ import type {
   AchievementRow,
   CertificateRow,
   ProjectRow,
+  OrganizationRow,
   TechCategoryRow,
   TechItemRow,
 } from './db'
@@ -47,6 +48,11 @@ export interface AdminUserRow {
 }
 
 export interface AdminExperienceRow extends ExperienceRow {
+  is_active: boolean
+  updated_at: string
+}
+
+export interface AdminOrganizationRow extends OrganizationRow {
   is_active: boolean
   updated_at: string
 }
@@ -286,6 +292,59 @@ export async function updateExperience(
 
 export async function deleteExperience(id: number): Promise<void> {
   await pool.query('DELETE FROM experiences WHERE id = $1', [id])
+}
+
+// ─── Organizations ───────────────────────────────────────────────────────────
+
+export async function getAllOrganizations(): Promise<AdminOrganizationRow[]> {
+  await ensureOrganizationsTable()
+  const { rows } = await pool.query<AdminOrganizationRow>(
+    'SELECT * FROM organizations ORDER BY sort_order ASC'
+  )
+  return rows
+}
+
+export async function createOrganization(data: {
+  name: string
+  role: string
+  date_range: string
+  description?: string
+  skills: string[]
+  sort_order: number
+}): Promise<AdminOrganizationRow> {
+  await ensureOrganizationsTable()
+  const { rows } = await pool.query<AdminOrganizationRow>(
+    `INSERT INTO organizations (name, role, date_range, description, skills, sort_order)
+     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+    [
+      data.name,
+      data.role,
+      data.date_range,
+      data.description || '',
+      data.skills,
+      data.sort_order,
+    ]
+  )
+  return rows[0]
+}
+
+export async function updateOrganization(
+  id: number,
+  data: Partial<AdminOrganizationRow>
+): Promise<AdminOrganizationRow> {
+  await ensureOrganizationsTable()
+  const fields = Object.keys(data).filter((k) => k !== 'id')
+  const values = fields.map((k) => (data as Record<string, unknown>)[k])
+  const setClause = fields.map((f, i) => `${f} = $${i + 2}`).join(', ')
+  const { rows } = await pool.query<AdminOrganizationRow>(
+    `UPDATE organizations SET ${setClause}, updated_at = NOW() WHERE id = $1 RETURNING *`,
+    [id, ...values]
+  )
+  return rows[0]
+}
+
+export async function deleteOrganization(id: number): Promise<void> {
+  await pool.query('DELETE FROM organizations WHERE id = $1', [id])
 }
 
 // ─── Educations ───────────────────────────────────────────────────────────────
@@ -605,6 +664,7 @@ export async function deleteTechItem(id: number): Promise<void> {
 
 export async function getDashboardStats(): Promise<{
   experiences: number
+  organizations: number
   educations: number
   achievements: number
   certificates: number
@@ -614,29 +674,83 @@ export async function getDashboardStats(): Promise<{
   techCategories: number
   techItems: number
   quickStats: number
+  active: {
+    experiences: number
+    organizations: number
+    educations: number
+    achievements: number
+    certificates: number
+    projects: number
+    roles: number
+    socials: number
+    techCategories: number
+    techItems: number
+    quickStats: number
+  }
 }> {
-  const results = await Promise.all([
-    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM experiences'),
-    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM educations'),
-    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM achievements'),
-    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM certificates'),
-    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM projects'),
-    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM roles'),
-    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM socials'),
-    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM tech_categories'),
-    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM tech_items'),
-    pool.query<{ count: string }>('SELECT COUNT(*) as count FROM quick_stats'),
+  await ensureOrganizationsTable()
+
+  async function count(
+    table: string
+  ): Promise<{ total: number; active: number }> {
+    const { rows } = await pool.query<{ total: number; active: number }>(
+      `SELECT COUNT(*)::int AS total,
+              COUNT(*) FILTER (WHERE is_active)::int AS active
+       FROM ${table}`
+    )
+    return rows[0]
+  }
+
+  const [
+    experiences,
+    organizations,
+    educations,
+    achievements,
+    certificates,
+    projects,
+    roles,
+    socials,
+    techCategories,
+    techItems,
+    quickStats,
+  ] = await Promise.all([
+    count('experiences'),
+    count('organizations'),
+    count('educations'),
+    count('achievements'),
+    count('certificates'),
+    count('projects'),
+    count('roles'),
+    count('socials'),
+    count('tech_categories'),
+    count('tech_items'),
+    count('quick_stats'),
   ])
+
   return {
-    experiences: parseInt(results[0].rows[0].count, 10),
-    educations: parseInt(results[1].rows[0].count, 10),
-    achievements: parseInt(results[2].rows[0].count, 10),
-    certificates: parseInt(results[3].rows[0].count, 10),
-    projects: parseInt(results[4].rows[0].count, 10),
-    roles: parseInt(results[5].rows[0].count, 10),
-    socials: parseInt(results[6].rows[0].count, 10),
-    techCategories: parseInt(results[7].rows[0].count, 10),
-    techItems: parseInt(results[8].rows[0].count, 10),
-    quickStats: parseInt(results[9].rows[0].count, 10),
+    experiences: experiences.total,
+    organizations: organizations.total,
+    educations: educations.total,
+    achievements: achievements.total,
+    certificates: certificates.total,
+    projects: projects.total,
+    roles: roles.total,
+    socials: socials.total,
+    techCategories: techCategories.total,
+    techItems: techItems.total,
+    quickStats: quickStats.total,
+    active: {
+      experiences: experiences.active,
+      organizations: organizations.active,
+      educations: educations.active,
+      achievements: achievements.active,
+      certificates: certificates.active,
+      projects: projects.active,
+      roles: roles.active,
+      socials: socials.active,
+      techCategories: techCategories.active,
+      techItems: techItems.active,
+      quickStats: quickStats.active,
+    },
   }
 }

@@ -132,6 +132,16 @@ export interface ExperienceRow {
   sort_order: number
 }
 
+export interface OrganizationRow {
+  id: number
+  name: string
+  role: string
+  date_range: string
+  description: string
+  skills: string[]
+  sort_order: number
+}
+
 export interface EducationRow {
   id: number
   institution: string
@@ -254,6 +264,14 @@ export async function getExperiences(): Promise<ExperienceRow[]> {
   return rows
 }
 
+export async function getOrganizations(): Promise<OrganizationRow[]> {
+  await ensureOrganizationsTable()
+  const { rows } = await pool.query<OrganizationRow>(
+    'SELECT * FROM organizations WHERE is_active = TRUE ORDER BY sort_order ASC'
+  )
+  return rows
+}
+
 export async function getEducations(): Promise<EducationRow[]> {
   const { rows } = await pool.query<EducationRow>(
     'SELECT * FROM educations WHERE is_active = TRUE ORDER BY sort_order ASC'
@@ -304,6 +322,40 @@ export function ensureProjectImagesColumn(): Promise<void> {
       })
   }
   return projectImagesColumnPromise
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Migrasi ringan: tabel organisasi.
+// Idempotent, sehingga database production (Neon) otomatis memiliki tabel
+// ini saat fitur organisasi pertama kali diakses.
+// ─────────────────────────────────────────────────────────────────────────────
+
+let organizationsTablePromise: Promise<void> | null = null
+
+export function ensureOrganizationsTable(): Promise<void> {
+  if (!organizationsTablePromise) {
+    organizationsTablePromise = pool
+      .query(`
+        CREATE TABLE IF NOT EXISTS organizations (
+          id          SERIAL PRIMARY KEY,
+          name        VARCHAR(200) NOT NULL,
+          role        VARCHAR(200) NOT NULL,
+          date_range  VARCHAR(100) NOT NULL,
+          description TEXT         NOT NULL DEFAULT '',
+          skills      TEXT[]       NOT NULL DEFAULT '{}',
+          sort_order  INT          NOT NULL DEFAULT 0,
+          is_active   BOOLEAN      NOT NULL DEFAULT TRUE,
+          created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+          updated_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+        )
+      `)
+      .then(() => undefined)
+      .catch((error) => {
+        organizationsTablePromise = null
+        throw error
+      })
+  }
+  return organizationsTablePromise
 }
 
 export async function getTechCategoriesWithItems(): Promise<

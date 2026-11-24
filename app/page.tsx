@@ -13,6 +13,7 @@ import {
   fetchStats,
   fetchSocials,
   fetchExperiences,
+  fetchOrganizations,
   fetchEducations,
   fetchAchievements,
   fetchCertificates,
@@ -32,6 +33,7 @@ export default async function Home() {
     stats,
     socials,
     experiences,
+    organizations,
     educations,
     achievements,
     certificates,
@@ -43,6 +45,7 @@ export default async function Home() {
     fetchStats(),
     fetchSocials(),
     fetchExperiences(),
+    fetchOrganizations(),
     fetchEducations(),
     fetchAchievements(),
     fetchCertificates(),
@@ -57,7 +60,11 @@ export default async function Home() {
       </header>
       <Hero profile={profile} roles={roles} stats={stats} socials={socials} />
       <About profile={profile} />
-      <Journey experiences={experiences} educations={educations} />
+      <Journey
+        experiences={experiences}
+        organizations={organizations}
+        educations={educations}
+      />
       <TechStack techStack={techStack} />
       <Project projects={projects} socials={socials} />
       <AchievementsCertificates

@@ -9,6 +9,7 @@ import {
   getQuickStats,
   getSocials,
   getExperiences,
+  getOrganizations,
   getEducations,
   getAchievements,
   getCertificates,
@@ -24,6 +25,7 @@ import {
   FALLBACK_QUICK_STATS,
   FALLBACK_SOCIALS,
   FALLBACK_EXPERIENCES,
+  FALLBACK_ORGANIZATIONS,
   FALLBACK_EDUCATIONS,
   FALLBACK_ACHIEVEMENTS,
   FALLBACK_CERTIFICATES,
@@ -36,6 +38,7 @@ import type {
   QuickStatRow,
   SocialRow,
   ExperienceRow,
+  OrganizationRow,
   EducationRow,
   AchievementRow,
   CertificateRow,
@@ -99,6 +102,7 @@ export const fetchRoles     = (): Promise<RoleRow[]>        => safe(getRoles, FA
 export const fetchStats     = (): Promise<QuickStatRow[]>   => safe(getQuickStats, FALLBACK_QUICK_STATS)
 export const fetchSocials   = (): Promise<SocialRow[]>      => safe(getSocials, FALLBACK_SOCIALS)
 export const fetchExperiences = (): Promise<ExperienceRow[]>=> safe(getExperiences, FALLBACK_EXPERIENCES)
+export const fetchOrganizations = (): Promise<OrganizationRow[]> => safe(getOrganizations, FALLBACK_ORGANIZATIONS)
 export const fetchEducations = (): Promise<EducationRow[]>  => safe(getEducations, FALLBACK_EDUCATIONS)
 export const fetchAchievements = (): Promise<AchievementRow[]> => safe(getAchievements, FALLBACK_ACHIEVEMENTS)
 export const fetchCertificates = (): Promise<CertificateRow[]> => safe(getCertificates, FALLBACK_CERTIFICATES)
